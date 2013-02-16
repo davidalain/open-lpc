@@ -1,6 +1,10 @@
 #ifndef DIGITALIN_H
 #define DIGITALIN_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*!
  * \file DigitalIn.h
  * Tipo para interface com pinos digitais de entrada.
@@ -12,6 +16,7 @@
  */
 
 #include <port_types.h>
+#include <stdint.h>
 
 /*!
  * \struct DigitalIn
@@ -19,21 +24,25 @@
  */
 
 /*!
- * \fn void digitalin_setup (DigitalIn &pin, uint32_t portnum, uint32_t pinnum)
+ * \fn void digitalin_setup (DigitalIn *pin, uint32_t portnum, uint32_t pinnum)
  * \brief Configura um pino como entrada digital
  * \param pin Ponteiro para estrutura DigitalIn
  * \param portnum Número da porta ao qual o pino pertence
  * \param pinnum Número correspondente do pino na porta (começando por zero)
  */
-void digitalin_setup (DigitalIn &pin, uint32_t portnum, uint32_t pinnum);
+void digitalin_setup (DigitalIn *pin, uint32_t portnum, uint32_t pinnum);
 
 /*!
- * \fn uint32_t digitalin_read (const DigitalIn &pin)
+ * \fn uint32_t digitalin_read (const DigitalIn *pin)
  * \brief Lê o valor de um pino digital
  * \param pin Ponteiro para estrutura DigitalIn
  * \returns O valor 1 (um) para nível lógico alto ou 0 (zero) para nível lógico baixo
  */
-uint32_t digitalin_read (const DigitalOut &pin);
+uint32_t digitalin_read (const DigitalOut *pin);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

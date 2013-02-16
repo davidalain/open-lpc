@@ -1,6 +1,10 @@
 #ifndef OPENLPC_H
 #define OPENLPC_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <DigitalIn.h>
 #include <DigitalOut.h>
 #include <USART.h>
@@ -21,6 +25,10 @@ Bem vindo ao manual da biblioteca *OpenLPC*!
 ==============================================
 
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
