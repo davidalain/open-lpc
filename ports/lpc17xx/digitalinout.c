@@ -58,7 +58,7 @@ inline static void digital_general_setup (void *pin, uint32_t portnum, uint32_t 
 			break;
 		default:
 			// TODO: Invoke a hard-fault function or so
-			break;
+			return ;
 	}
 }
 

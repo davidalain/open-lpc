@@ -107,9 +107,9 @@ uint32_t usart_data_available (const USART *usart);
  * Define transmissão com paridade par. Equivalente ao valor 2 (dois)
  */
 #define PAR_EVEN 2
-}
-#ifdef __cplusplus
 
+#ifdef __cplusplus
+}
 #endif
 
 #endif

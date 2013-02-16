@@ -19,7 +19,7 @@ typedef struct {
 } DigitalIn;
 
 typedef struct {
-	uint32_t uart;		// Endereco base da UART
+	uint32_t usart;		// Endereco base da UART
 	uint32_t baudrate;	// Baudrate
 	uint8_t wordsize;	// 8, 7, 6 ou 5 bits
 	uint8_t parity;		// N, 1 ou 2 bits de paridade
