@@ -72,6 +72,7 @@ void usart_set_stopbits (USART *usart, uint32_t stopbits);
  * \brief Escreve um byte pela porta serial
  * \param usart Ponteiro para estrutura USART
  * \param byte Valor a escrever
+ * Esta função bloqueia até a porta de saída estar disponível
  */
 void usart_write (const USART *usart, uint8_t byte);
 
