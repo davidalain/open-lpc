@@ -13,23 +13,36 @@ extern "C" {
 
 #include <USART.h>
 #include <LPC17xx.h>
-
-#define MAIN_CLOCK 96000000 // 96MHz
-							// OBS: Este clock é para a MBED! Modificar se a
-							// frequência for diferente de 96MHz
+#include <system_LPC17xx.h>
 
 static void usart_calculate_parameters (uint32_t baudrate, uint16_t *dl, 
                                         uint8_t *divaddval, uint8_t *mulval) {
 
-	if (MAIN_CLOCK % (baudrate * 16) == 0) { // Melhor caso: o baudrate é mútiplo
-		*dl = MAIN_CLOCK / (baudrate * 16);  // do clock principal
+	uint32_t a, b, c;
+	
+	// SystemCoreClock possui o clock do microcontrolador
+	if (SystemCoreClock % (baudrate * 16) == 0) { // Melhor caso: o baudrate é mútiplo
+		*dl = SystemCoreClock / (baudrate * 16);  // do clock principal
 		*divaddval = 0;
 		*mulval = 1;
 		return ;
 	}
 
-	// TODO: Colocar algoritmo para calcular o restante
-	
+	a = baudrate;
+	b = SystemCoreClock % baudrate;
+
+	// Calcula o MDC entre o baudrate e o resto da divisão entre o clock e o baudrate
+	// a saída está em 'b'
+	for (;;) {
+		if (a % b == 0) break;
+		c = a % b;
+		a = b;
+		b = c;
+	}
+
+	*dl = SystemCoreClock / (baudrate * 16);
+	*divaddval = *dl % b;
+	*mulval = baudrate % b;
 }
 	
 void usart_setup (USART *usart, uint32_t usart_num, 
@@ -151,7 +164,7 @@ void usart_set_stopbits (USART *usart, uint32_t stopbits) {
 
 void usart_write (const USART *usart, uint8_t byte) {
 	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
-	while (l_usart->LSR & (1 << 6) == 0); // OBS: Aguarda até a transmissão
+	while ((l_usart->LSR & (1 << 6)) == 0); // OBS: Aguarda até a transmissão
 	l_usart->THR = byte;
 }
 
