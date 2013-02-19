@@ -20,15 +20,8 @@ static void usart_calculate_parameters (uint32_t baudrate, uint16_t *dl,
 
 	uint32_t a, b, c, pclk;
 	
-	// SystemCoreClock possui o clock do microcontrolador
-//	if (SystemCoreClock % (baudrate * 16) == 0) { // Melhor caso: o baudrate é mútiplo
-//		*dl = SystemCoreClock / (baudrate * 16);  // do clock principal
-//		*divaddval = 0;
-//		*mulval = 1;
-//		return ;
-//	}
-
 	switch ((LPC_SC->PCLKSEL0 >> 6) & 0x03) {
+		default:
 		case 0x00:
 			pclk = SystemCoreClock / 4;
 			break;
@@ -41,7 +34,7 @@ static void usart_calculate_parameters (uint32_t baudrate, uint16_t *dl,
 		case 0x03:
 			pclk = SystemCoreClock / 8;
 			break;
-	};
+	}
 
 	a = baudrate;
 	b = pclk % baudrate;
@@ -68,6 +61,7 @@ void usart_setup (USART *usart, uint32_t usart_num,
 								// abaixo saibam onde ir para configurar as coisas
 
 	switch (usart_num) {
+		default:
 		case LPC_UART0_BASE:
 			LPC_SC->PCONP |= (1 << 3); // Ativa a porta serial (obs: já vem ativa por default) 
 			LPC_PINCON->PINSEL0 &= ~(0x02 << 4);
@@ -79,19 +73,28 @@ void usart_setup (USART *usart, uint32_t usart_num,
 
 		case LPC_UART1_BASE:
 			LPC_SC->PCONP |= (1 << 4); // Ativa a porta serial (obs: já vem ativa por default)
+			LPC_PINCON->PINSEL0 &= ~(0x02 << 30);
+			LPC_PINCON->PINSEL0 |= (0x01 << 30); // Seleciona GPIO0.15 como TXD
+			LPC_PINCON->PINMODE1 &= ~(0x03 << 0); // Garante que o RXD está sem resistor de pull-down
+			LPC_PINCON->PINSEL1 &= ~(0x02 << 0);
+			LPC_PINCON->PINSEL1 |= (0x01 << 0); // Seleciona GPIO0.16 como RXD
 			break;
 
 		case LPC_UART2_BASE:
 			LPC_SC->PCONP |= (1 << 24);
+			LPC_PINCON->PINSEL4 |= (0x02 << 16);
+			LPC_PINCON->PINSEL4 &= ~(0x01 << 16); // Seleciona GPIO2.8 como TXD
+			LPC_PINCON->PINMODE4 &= ~(0x03 << 18); // Garante que o RXD está sem resistor de pull-down
+			LPC_PINCON->PINSEL4 |= (0x02 << 18);
+			LPC_PINCON->PINSEL4 &= ~(0x01 << 18); // Seleciona GPIO2.9 como RXD
 			break;
 
 		case LPC_UART3_BASE:
 			LPC_SC->PCONP |= (1 << 25);
+			LPC_PINCON->PINSEL9 |= (0x03 << 24); // Seleciona GPIO4.28 como TXD
+			LPC_PINCON->PINMODE9 &= ~(0x03 << 26); // Garante que o RXD está sem resistor de pull-down
+			LPC_PINCON->PINSEL9 |= (0x03 << 26); // Seleciona GPIO4.29 como RXD
 			break;
-
-		default:
-			// TODO: Call some hardfault?
-			return ;
 	};
 
 	usart_set_baud (usart, baud);
@@ -113,7 +116,8 @@ void usart_set_baud (USART *usart, uint32_t baud) {
 	l_usart->DLL = (dl & 0x00FF);
 	l_usart->DLM = ((dl & 0xFF00) >> 8);
 	l_usart->LCR &= ~(1 << 7); // DLAB = 0
-	l_usart->FDR = ((mulval & 0x0F) << 4) | (divaddval & 0x0F);
+	// TODO: Checar porque a linha abaixo dá problema (divisor fracionário de clock)
+//	l_usart->FDR = ((mulval & 0x0F) << 4) | (divaddval & 0x0F);
 }
 
 void usart_set_wordsize (USART *usart, uint32_t wordsize) {
