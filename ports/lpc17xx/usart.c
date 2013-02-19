@@ -18,18 +18,33 @@ extern "C" {
 static void usart_calculate_parameters (uint32_t baudrate, uint16_t *dl, 
                                         uint8_t *divaddval, uint8_t *mulval) {
 
-	uint32_t a, b, c;
+	uint32_t a, b, c, pclk;
 	
 	// SystemCoreClock possui o clock do microcontrolador
-	if (SystemCoreClock % (baudrate * 16) == 0) { // Melhor caso: o baudrate é mútiplo
-		*dl = SystemCoreClock / (baudrate * 16);  // do clock principal
-		*divaddval = 0;
-		*mulval = 1;
-		return ;
-	}
+//	if (SystemCoreClock % (baudrate * 16) == 0) { // Melhor caso: o baudrate é mútiplo
+//		*dl = SystemCoreClock / (baudrate * 16);  // do clock principal
+//		*divaddval = 0;
+//		*mulval = 1;
+//		return ;
+//	}
+
+	switch ((LPC_SC->PCLKSEL0 >> 6) & 0x03) {
+		case 0x00:
+			pclk = SystemCoreClock / 4;
+			break;
+		case 0x01:
+			pclk = SystemCoreClock;
+			break;
+		case 0x02:
+			pclk = SystemCoreClock / 2;
+			break;
+		case 0x03:
+			pclk = SystemCoreClock / 8;
+			break;
+	};
 
 	a = baudrate;
-	b = SystemCoreClock % baudrate;
+	b = pclk % baudrate;
 
 	// Calcula o MDC entre o baudrate e o resto da divisão entre o clock e o baudrate
 	// a saída está em 'b'
@@ -40,11 +55,11 @@ static void usart_calculate_parameters (uint32_t baudrate, uint16_t *dl,
 		b = c;
 	}
 
-	*dl = SystemCoreClock / (baudrate * 16);
+	*dl = pclk / (baudrate * 16);
 	*divaddval = *dl % b;
 	*mulval = baudrate % b;
 }
-	
+
 void usart_setup (USART *usart, uint32_t usart_num, 
                   uint32_t baud, uint32_t wordsize, 
                   uint32_t parity, uint32_t stopbits) {
