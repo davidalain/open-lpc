@@ -1,6 +1,6 @@
 /*
- * usart.c
- * Funcões para objeto USART
+ * uart.c
+ * Funcões para objeto UART
  * Author: Cristóvão Zuppardo Rufino
  * Version LPC17xx 0.1
  * Date: 16/02/2013
@@ -11,11 +11,11 @@
 extern "C" {
 #endif
 
-#include <USART.h>
+#include <UART.h>
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
-static void usart_calculate_parameters (uint32_t baudrate, uint16_t *dl, 
+static void uart_calculate_parameters (uint32_t baudrate, uint16_t *dl, 
                                         uint8_t *divaddval, uint8_t *mulval) {
 
 	uint32_t a, b, c, pclk;
@@ -53,14 +53,14 @@ static void usart_calculate_parameters (uint32_t baudrate, uint16_t *dl,
 	*mulval = baudrate % b;
 }
 
-void usart_setup (USART *usart, uint32_t usart_num, 
+void uart_setup (UART *uart, uint32_t uart_num, 
                   uint32_t baud, uint32_t wordsize, 
                   uint32_t parity, uint32_t stopbits) {
 
-	usart->usart = usart_num;   // Necessário setar a USART para que as funções 
+	uart->uart = uart_num;   // Necessário setar a UART para que as funções 
 								// abaixo saibam onde ir para configurar as coisas
 
-	switch (usart_num) {
+	switch (uart_num) {
 		case LPC_UART0_BASE:
 			LPC_SC->PCONP |= (1 << 3); // Ativa a porta serial (obs: já vem ativa por default) 
 			LPC_PINCON->PINSEL0 &= ~(0x02 << 4);
@@ -99,104 +99,104 @@ void usart_setup (USART *usart, uint32_t usart_num,
 			// TODO: Invocar um hardfault talvez...
 	};
 
-	usart_set_baud (usart, baud);
-	usart_set_wordsize (usart, wordsize);
-	usart_set_baud (usart, baud);
-	usart_set_parity (usart, parity);
-	usart_set_stopbits (usart, stopbits);
+	uart_set_baud (uart, baud);
+	uart_set_wordsize (uart, wordsize);
+	uart_set_baud (uart, baud);
+	uart_set_parity (uart, parity);
+	uart_set_stopbits (uart, stopbits);
 	
 }
 
-void usart_set_baud (USART *usart, uint32_t baud) {
+void uart_set_baud (UART *uart, uint32_t baud) {
 	uint16_t dl;
 	uint8_t divaddval, mulval;
-	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
+	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 
-	usart_calculate_parameters (baud, &dl, &divaddval, &mulval);
+	uart_calculate_parameters (baud, &dl, &divaddval, &mulval);
 	
-	l_usart->LCR |= (1 << 7);  // DLAB = 1
-	l_usart->DLL = (dl & 0x00FF);
-	l_usart->DLM = (dl >> 8);
-	l_usart->LCR &= ~(1 << 7); // DLAB = 0
+	l_uart->LCR |= (1 << 7);  // DLAB = 1
+	l_uart->DLL = (dl & 0x00FF);
+	l_uart->DLM = (dl >> 8);
+	l_uart->LCR &= ~(1 << 7); // DLAB = 0
 	// TODO: Checar porque a linha abaixo dá problema (divisor fracionário de clock)
-//	l_usart->FDR = ((mulval & 0x0F) << 4) | (divaddval & 0x0F);
+//	l_uart->FDR = ((mulval & 0x0F) << 4) | (divaddval & 0x0F);
 }
 
-void usart_set_wordsize (USART *usart, uint32_t wordsize) {
-	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
+void uart_set_wordsize (UART *uart, uint32_t wordsize) {
+	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 	
 	switch (wordsize) {
 		case 5:
-			l_usart->LCR &= ~(0x03 << 0);
+			l_uart->LCR &= ~(0x03 << 0);
 			break;
 			
 		case 6:
-			l_usart->LCR &= ~(0x02 << 0);
-			l_usart->LCR |= (0x01 << 0);
+			l_uart->LCR &= ~(0x02 << 0);
+			l_uart->LCR |= (0x01 << 0);
 			break;
 			
 		case 7:
-			l_usart->LCR &= ~(0x01 << 0);
-			l_usart->LCR |= (0x02 << 0);
+			l_uart->LCR &= ~(0x01 << 0);
+			l_uart->LCR |= (0x02 << 0);
 			break;
 			
 		case 8:
 		default:
-			l_usart->LCR |= (0x03 << 0);
+			l_uart->LCR |= (0x03 << 0);
 			break;
 	}
 }
 
-void usart_set_parity (USART *usart, uint32_t parity) {
-	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
+void uart_set_parity (UART *uart, uint32_t parity) {
+	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 
 	switch (parity) {
 		case PAR_ODD:
-			l_usart->LCR |= (1 << 3); // Ativa a geração de paridade
-			l_usart->LCR &= ~(0x03 << 4); // Ativa paridade ímpar
+			l_uart->LCR |= (1 << 3); // Ativa a geração de paridade
+			l_uart->LCR &= ~(0x03 << 4); // Ativa paridade ímpar
 			break;
 
 		case PAR_EVEN:
-			l_usart->LCR |= (1 << 3);
-			l_usart->LCR |= (0x01 << 4);
+			l_uart->LCR |= (1 << 3);
+			l_uart->LCR |= (0x01 << 4);
 			break;
 
 		case PAR_NONE:
 		default:
-			l_usart->LCR &= ~(1 << 3); // Desliga geração de paridade
+			l_uart->LCR &= ~(1 << 3); // Desliga geração de paridade
 			break;
 	}
 }
 
-void usart_set_stopbits (USART *usart, uint32_t stopbits) {
-	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
+void uart_set_stopbits (UART *uart, uint32_t stopbits) {
+	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 
 	switch (stopbits) {
 		case 2:
-			l_usart->LCR |= (1 << 2);
+			l_uart->LCR |= (1 << 2);
 			break;
 			
 		default:
 		case 1:
-			l_usart->LCR &= ~(1 << 2);
+			l_uart->LCR &= ~(1 << 2);
 			break;
 	}
 }
 
-void usart_write (const USART *usart, uint8_t byte) {
-	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
-	while ((l_usart->LSR & (1 << 6)) == 0); // OBS: Aguarda até a transmissão
-	l_usart->THR = byte;
+void uart_write (const UART *uart, uint8_t byte) {
+	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
+	while ((l_uart->LSR & (1 << 6)) == 0); // OBS: Aguarda até a transmissão
+	l_uart->THR = byte;
 }
 
-uint8_t usart_read (const USART *usart) {
-	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
-	return l_usart->RBR;	// OBS: Não há espera para ver se há dado válido
+uint8_t uart_read (const UART *uart) {
+	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
+	return l_uart->RBR;	// OBS: Não há espera para ver se há dado válido
 }
 
-uint32_t usart_data_available (const USART *usart) {
-	LPC_UART_TypeDef *l_usart = (LPC_UART_TypeDef *)usart->usart;
-	return (l_usart->LSR & 0x01);
+uint32_t uart_data_available (const UART *uart) {
+	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
+	return (l_uart->LSR & 0x01);
 }
 
 #ifdef __cplusplus
