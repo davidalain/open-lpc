@@ -33,7 +33,7 @@ typedef struct {
 
 typedef struct {
 	uint32_t i2c;
-} I2CMaster
+} I2CMaster;
 
 #ifdef __cplusplus
 }

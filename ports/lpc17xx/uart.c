@@ -97,6 +97,7 @@ void uart_setup (UART *uart, uint32_t uart_num,
 
 		default:
 			// TODO: Invocar um hardfault talvez...
+		break;
 	};
 
 	uart_set_baud (uart, baud);

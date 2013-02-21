@@ -7,7 +7,7 @@ extern "C" {
 
 #include <DigitalIn.h>
 #include <DigitalOut.h>
-#include <USART.h>
+#include <UART.h>
 
 /*!
  * \file OpenLPC.h
