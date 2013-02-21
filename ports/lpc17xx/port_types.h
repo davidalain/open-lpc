@@ -1,6 +1,11 @@
 #ifndef PORT_TYPES_H
 #define PORT_TYPES_H
 
+/*
+ * port_types.h
+ * Tipos definidos para cada arquitetura
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,6 +30,10 @@ typedef struct {
 	uint8_t parity;		// N, 1 ou 2 bits de paridade
 	uint8_t stopbits;	// 1 ou 2 stop bits
 } USART;
+
+typedef struct {
+	uint32_t i2c;
+} I2CMaster
 
 #ifdef __cplusplus
 }

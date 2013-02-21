@@ -61,7 +61,6 @@ void usart_setup (USART *usart, uint32_t usart_num,
 								// abaixo saibam onde ir para configurar as coisas
 
 	switch (usart_num) {
-		default:
 		case LPC_UART0_BASE:
 			LPC_SC->PCONP |= (1 << 3); // Ativa a porta serial (obs: já vem ativa por default) 
 			LPC_PINCON->PINSEL0 &= ~(0x02 << 4);
@@ -95,6 +94,9 @@ void usart_setup (USART *usart, uint32_t usart_num,
 			LPC_PINCON->PINMODE9 &= ~(0x03 << 26); // Garante que o RXD está sem resistor de pull-down
 			LPC_PINCON->PINSEL9 |= (0x03 << 26); // Seleciona GPIO4.29 como RXD
 			break;
+
+		default:
+			// TODO: Invocar um hardfault talvez...
 	};
 
 	usart_set_baud (usart, baud);
@@ -114,7 +116,7 @@ void usart_set_baud (USART *usart, uint32_t baud) {
 	
 	l_usart->LCR |= (1 << 7);  // DLAB = 1
 	l_usart->DLL = (dl & 0x00FF);
-	l_usart->DLM = ((dl & 0xFF00) >> 8);
+	l_usart->DLM = (dl >> 8);
 	l_usart->LCR &= ~(1 << 7); // DLAB = 0
 	// TODO: Checar porque a linha abaixo dá problema (divisor fracionário de clock)
 //	l_usart->FDR = ((mulval & 0x0F) << 4) | (divaddval & 0x0F);
