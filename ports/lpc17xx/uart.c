@@ -15,12 +15,12 @@ extern "C" {
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
-static void uart_calculate_parameters (uint32_t baudrate, uint16_t *dl, 
+static void uart_calculate_parameters (uint32_t clk_sel, uint32_t baudrate, uint16_t *dl, 
                                         uint8_t *divaddval, uint8_t *mulval) {
 
 	uint32_t a, b, c, pclk;
 	
-	switch ((LPC_SC->PCLKSEL0 >> 6) & 0x03) {
+	switch (clk_sel) {
 		default:
 		case 0x00:
 			pclk = SystemCoreClock / 4;
@@ -57,8 +57,8 @@ void uart_setup (UART *uart, uint32_t uart_num,
                   uint32_t baud, uint32_t wordsize, 
                   uint32_t parity, uint32_t stopbits) {
 
-	uart->uart = uart_num;   // Necessário setar a UART para que as funções 
-								// abaixo saibam onde ir para configurar as coisas
+	uart->uart = uart_num;  // Necessário setar a UART para que as funções 
+							// abaixo saibam onde ir para configurar as coisas
 
 	switch (uart_num) {
 		case LPC_UART0_BASE:
@@ -111,9 +111,28 @@ void uart_setup (UART *uart, uint32_t uart_num,
 void uart_set_baud (UART *uart, uint32_t baud) {
 	uint16_t dl;
 	uint8_t divaddval, mulval;
+	uint32_t clk_sel;
+	
 	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 
-	uart_calculate_parameters (baud, &dl, &divaddval, &mulval);
+	switch (uart->uart) {
+		case LPC_UART0_BASE:
+			clk_sel = (LPC_SC->PCLKSEL0 >> 6) & 0x03;
+			break;
+		case LPC_UART1_BASE:
+			clk_sel = (LPC_SC->PCLKSEL0 >> 8) & 0x03;
+			break;
+		case LPC_UART2_BASE:
+			clk_sel = (LPC_SC->PCLKSEL1 >> 16) & 0x03;
+			break;
+		case LPC_UART3_BASE:
+			clk_sel = (LPC_SC->PCLKSEL1 >> 18) & 0x03;
+			break;
+		default:
+			break;  // Em tese nunca chegará aqui
+	};
+	
+	uart_calculate_parameters (clk_sel, baud, &dl, &divaddval, &mulval);
 	
 	l_uart->LCR |= (1 << 7);  // DLAB = 1
 	l_uart->DLL = (dl & 0x00FF);

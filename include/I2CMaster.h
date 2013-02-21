@@ -28,8 +28,9 @@ extern "C" {
  * \brief Configura uma porta I2C em modo Master
  * \param i2c Ponteiro para estrutura I2CMaster
  * \param i2c_num Número da porta a ser utilizada
+	 * \param i2c_clk Clock de operação do I2C
  */
-void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num);
+void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num, uint32_t i2c_clk);
 
 /*!
  * \fn uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, uint32_t length)
@@ -54,17 +55,31 @@ uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, u
 uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t data, uint32_t length);
 
 /*!
- * \fn void i2cmaster_generate_start (void)
+ * \fn void i2cmaster_generate_start (const I2CMaster *i2c)
  * \brief Gera uma condição 'start' na linha de dados
+ * \param i2c Ponteiro para estrutura I2CMaster
  */
-void i2cmaster_generate_start (void);
+void i2cmaster_generate_start (const I2CMaster *i2c);
 
 /*!
- * \fn void i2cmaster_generate_stop (void)
+ * \fn void i2cmaster_generate_stop (const I2CMaster *i2c)
  * \brief Gera uma condição 'stop' na linha de dados
+ * \param i2c Ponteiro para estrutura I2CMaster
  */
-void i2cmaster_generate_stop (void);
+void i2cmaster_generate_stop (const I2CMaster *i2c);
 
+/*!
+ * \def I2C_100KHZ
+ * Define o clock da porta I2C igual a 100kHz
+ */
+#define I2C_100KHZ  100000
+
+/*!
+ * \def I2C_100KHZ
+ * Define o clock da porta I2C igual a 100kHz
+ */
+#define I2C_400KHZ  400000
+	
 #ifdef __cplusplus
 }
 #endif
