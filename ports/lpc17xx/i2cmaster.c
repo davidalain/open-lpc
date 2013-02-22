@@ -15,6 +15,24 @@ extern "C" {
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
+// Status para Master Transmit (MT)
+#define MT_START_TRANSMITTED_ACK 0x08
+#define MT_REPEATED_START_TRANSMITTED_ACK 0x10
+#define MT_SLA_W_TRANSMITTED_ACK 0x18
+#define MT_SLA_W_TRANSMITTED_NACK 0x20
+#define MT_BYTE_TRANSMITTED_ACK 0x28
+#define MT_BYTE_TRANSMITTED_NACK 0x30
+#define MT_SLA_RW_ARBITRATION_LOST 0x38
+
+// Status para Master Receive (MR)
+#define MR_START_TRANSMITTED_ACK 0x08
+#define MR_REPEATED_START_TRANSMITTED 0x10
+#define MR_ARBITRATION_LOST 0x38
+#define MR_SLA_R_TRANSMITTED_ACK 0x40
+#define MR_SLA_R_TRANSMITTED_NACK 0x48
+#define MR_BYTE_RECEIVED_ACK 0x50
+#define MR_BYTE_RECEIVED_NACK 0x58
+
 static void i2cmaster_set_clock (const I2CMaster *i2c, uint32_t i2c_clk) {
 	uint32_t clk_sel, pclk;
 	uint16_t scl_hl;
@@ -57,6 +75,7 @@ static void i2cmaster_set_clock (const I2CMaster *i2c, uint32_t i2c_clk) {
 }
 	
 void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num, uint32_t i2c_clk) {
+	LPC_I2C_TypeDef *l_i2c;
 
 	i2c->i2c = i2c_num;
 
@@ -120,6 +139,8 @@ void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num, uint32_t i2c_clk) {
 	}
 
 	i2cmaster_set_clock (i2c, i2c_clk);
+	l_i2c = (LPC_I2C_TypeDef *)i2c_num;
+	l_i2c->I2CONSET |= (1 << 6);	// Ativa o modo Master
 }
 
 uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, uint32_t length) {
@@ -131,11 +152,28 @@ uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t d
 }
 
 void i2cmaster_generate_start (const I2CMaster *i2c) {
+	LPC_I2C_TypeDef *l_i2c;
 
+	l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
+
+	l_i2c->I2CONSET |= (1 << 5);	// Sinaliza START
+	l_i2c->I2CONCLR |= (1 << 3);	// Limpa a interrupção
+
+	while ((l_i2c->I2CONSET & (1 << 3)) == 0)
+		;   // Aguarda o fim do START
+	l_i2c->I2CONCLR |= (1 << 5);	// Limpa o START
 }
 
 void i2cmaster_generate_stop (const I2CMaster *i2c) {
+	LPC_I2C_TypeDef *l_i2c;
 
+	l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
+
+	if (l_i2c->I2CONSET & (1 << 5))
+		l_i2c->I2CONCLR |= (1 << 5);	// Limpa o START se estiver setado
+
+	l_i2c->I2CONSET |= (1 << 4);
+	l_i2c->I2CONCLR |= (1 << 4);	// Sinaliza o STOP
 }
 
 #ifdef __cplusplus
