@@ -52,7 +52,7 @@ uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, u
  * \param length Tamanho, em bytes, dos dados
  * \returns 0 em caso de sucesso
  */
-uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t data, uint32_t length);
+uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t *data, uint32_t length);
 
 /*!
  * \fn void i2cmaster_generate_start (const I2CMaster *i2c)
