@@ -68,22 +68,24 @@ void uart_set_parity (UART *uart, uint32_t parity);
 void uart_set_stopbits (UART *uart, uint32_t stopbits);
 
 /*!
- * \fn void uart_write (const UART *uart, uint8_t byte)
- * \brief Escreve um byte pela porta serial
+ * \fn uint32_t uart_write (const UART *uart, const uint8_t *data, uint32_t length)
+ * \brief Escreve vários bytes pela porta serial
  * \param uart Ponteiro para estrutura UART
- * \param byte Valor a escrever
- * Esta função bloqueia até a porta de saída estar disponível
+ * \param data Ponteiro para array de bytes
+ * \param length Tamanho de data
+ * \returns Quantidade total de bytes escritos
  */
-void uart_write (const UART *uart, uint8_t byte);
+uint32_t uart_write (const UART *uart, const uint8_t *data, uint32_t length);
 
 /*!
  * \fn void uart_read (const UART *uart)
- * \brief Lê um byte da porta serial
+ * \brief Lê vários bytes da porta serial
  * \param uart Ponteiro para estrutura UART
- * \returns Byte lido
- * Esta função devolve imediatamente o valor lido, sem esperar
+ * \param data Ponteiro para array de bytes
+ * \param length Tamanho de data
+ * \returns Quantidade total de bytes escritos
  */
-uint8_t uart_read (const UART *uart);
+uint32_t uart_read (const UART *uart, uint8_t *data, uint32_t length);
 
 /*!
  * \fn void uart_data_available (const UART *uart)

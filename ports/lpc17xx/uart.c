@@ -203,15 +203,36 @@ void uart_set_stopbits (UART *uart, uint32_t stopbits) {
 	}
 }
 
-void uart_write (const UART *uart, uint8_t byte) {
-	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
-	while ((l_uart->LSR & (1 << 6)) == 0); // OBS: Aguarda até a transmissão
-	l_uart->THR = byte;
+uint32_t uart_write (const UART *uart, const uint8_t *data, uint32_t length) {
+
+	uint32_t i;
+	LPC_UART_TypeDef *l_uart;
+
+	l_uart = (LPC_UART_TypeDef *)uart->uart; 
+	i = 0;
+	while (length > 0) {
+		while ((l_uart->LSR & (1 << 6)) == 0); // OBS: Aguarda até a transmissão
+		l_uart->THR = data[i];
+		length--; i++;
+	}
+
+	return i;
 }
 
-uint8_t uart_read (const UART *uart) {
-	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
-	return l_uart->RBR;	// OBS: Não há espera para ver se há dado válido
+uint32_t uart_read (const UART *uart, uint8_t *data, uint32_t length) {
+
+	uint32_t i;
+	LPC_UART_TypeDef *l_uart;
+
+	l_uart = (LPC_UART_TypeDef *)uart->uart;
+	i = 0;
+	while (length > 0) {
+		while (l_uart->LSR & (1 << 0));
+		data[i] = l_uart->RBR;
+		length--; i++;
+	}
+
+	return i;
 }
 
 uint32_t uart_data_available (const UART *uart) {
