@@ -140,34 +140,55 @@ void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num, uint32_t i2c_clk) {
 
 	i2cmaster_set_clock (i2c, i2c_clk);
 	l_i2c = (LPC_I2C_TypeDef *)i2c_num;
-	l_i2c->I2CONSET |= (1 << 6);	// Ativa o modo Master
+	l_i2c->I2CONSET |= (1 << 6);	// Ativa o I2C
 }
 
 uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, uint32_t length) {
 
-    uint32_t i;
-    LPC_I2C_TypeDef *l_i2c;
+	uint32_t i;
+	LPC_I2C_TypeDef *l_i2c;
 
-    l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
+	l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
 
-    i2cmaster_generate_start (i2c);
-    while ((l_i2c->I2CONSET & (1 << 3)) == 0);  // Espera ficar pronto para transmitir
+	i2cmaster_generate_start (i2c);
 
-    l_i2c->I2DAT = (address | (1 << 0));    // Envia o endereço
-    l_i2c->I2CONCLR |= (1 << 3);    // Limpa a flag SI
+	l_i2c->I2DAT = (address | (1 << 0));    // Envia o endereço indicando leitura (R/W bit = 0)
+	l_i2c->I2CONCLR |= (1 << 3);    // Limpa a flag SI
 
-    i = 0;
-    while (length > 0) {
-        while ((l_i2c->I2CONSET & (1 << 3)) == 0);  // Espera ficar pronto para transmitir
-        data[i] = l_i2c->I2DATA_BUFFER;
-        l_i2c->I2CONCLR |= (1 << 3);    // Limpa a flag SI
-    }
+	i = 0;
+	while (length > 0) {
+		while ((l_i2c->I2CONSET & (1 << 3)) == 0);  // Espera ficar pronto para transmitir
+		data[i] = l_i2c->I2DATA_BUFFER;
+		length--; i++;
+		l_i2c->I2CONCLR |= (1 << 3);    // Limpa a flag SI
+	}
+
+	i2cmaster_generate_stop (i2c);
 
 	return i;   // Retorna o total lido
 }
 
 uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t *data, uint32_t length) {
-	return 0;
+
+	uint32_t i;
+	LPC_I2C_TypeDef *l_i2c;
+
+	l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
+
+	i2cmaster_generate_start (i2c);
+
+	l_i2c->I2DAT = (address & ~(1 << 0));   // Envia o endereço indicando escrita (R/W bit = 0)
+	l_i2c->I2CONCLR |= (1 << 3);	// Limpa a flag SI
+	
+	i = 0;
+	while (length > 0) {
+		while ((l_i2c->I2CONSET & (1 << 3)) == 0);  // Espera ficar pronto para transmitir
+		l_i2c->I2DAT = data[i];
+		length--; i++;
+		l_i2c->I2CONCLR |= (1 << 3);    // Limpa a flag SI
+	}
+
+	return i;
 }
 
 void i2cmaster_generate_start (const I2CMaster *i2c) {
