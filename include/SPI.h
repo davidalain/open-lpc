@@ -35,24 +35,24 @@ void spi_setup (SPI *spi, uint32_t spi_num, uint32_t spi_freq);
 /*!
  * \fn void spi_set_frequency (SPI *spi, uint32_t freq)
  * \brief Configura somente a frequencia de operação
- * \param uart Ponteiro para estrutura SPI
- * \param baud Novo valor da frequencia em Hz
+ * \param spi Ponteiro para estrutura SPI
+ * \param freq Novo valor da frequencia em Hz
  */
-void spi_set_frequency (SPI *spi, uint32_t freq);
+void spi_set_frequency (const SPI *spi, uint32_t freq);
 
 /*!
  * \fn uint32_t spi_write (const SPI *spi, const uint8_t *data, uint8_t *recv, uint32_t length)
  * \brief Escreve vários bytes pela porta SPI
  * \param spi Ponteiro para estrutura SPI
  * \param data Ponteiro para array de bytes de saída
- * \param recv Ponteiro para array de bytes de entrada (pode ser NULL)
  * \param length Tamanho de data
  * \returns Quantidade total de bytes escritos
  */
-uint32_t spi_write (const SPI *spi, const uint8_t *data, uint8_t *recv, uint32_t length);
+uint32_t spi_write (const SPI *spi, const uint8_t *data, uint32_t length);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
+

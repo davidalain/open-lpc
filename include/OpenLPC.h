@@ -8,6 +8,7 @@ extern "C" {
 #include <DigitalIn.h>
 #include <DigitalOut.h>
 #include <UART.h>
+#include <SPI.h>
 
 /*!
  * \file OpenLPC.h
