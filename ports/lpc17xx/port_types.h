@@ -35,6 +35,10 @@ typedef struct {
 	uint32_t i2c;
 } I2CMaster;
 
+typedef struct {
+	uint32_t spi;
+} SPI;
+
 #ifdef __cplusplus
 }
 #endif
