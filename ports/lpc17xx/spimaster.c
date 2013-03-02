@@ -72,7 +72,7 @@ void spi_set_frequency (const SPI *spi, uint32_t freq) {
     if ((pclk / freq) < 8)
         l_spi->SPCCR = 8;
     else
-        l_spi->SPCCR = (pclk / freq);
+        l_spi->SPCCR = (pclk / freq) & 0xFF;
 
 }
 

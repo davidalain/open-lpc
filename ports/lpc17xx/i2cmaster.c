@@ -152,7 +152,7 @@ uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, u
 
 	i2cmaster_generate_start (i2c);
 
-	l_i2c->I2DAT = (address | (1 << 0));    // Envia o endereço indicando leitura (R/W bit = 0)
+	l_i2c->I2DAT = ((address << 1) | (1 << 0));    // Envia o endereço indicando leitura (R/W bit = 0)
 	l_i2c->I2CONCLR |= (1 << 3);    // Limpa a flag SI
 
 	i = 0;
@@ -177,7 +177,7 @@ uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t *
 
 	i2cmaster_generate_start (i2c);
 
-	l_i2c->I2DAT = (address & ~(1 << 0));   // Envia o endereço indicando escrita (R/W bit = 0)
+	l_i2c->I2DAT = ((address << 1) & ~(1 << 0));   // Envia o endereço indicando escrita (R/W bit = 0)
 	l_i2c->I2CONCLR |= (1 << 3);	// Limpa a flag SI
 	
 	i = 0;
