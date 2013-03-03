@@ -30,7 +30,7 @@ void spi_setup (SPI *spi, uint32_t spi_num, uint32_t spi_freq) {
 
     spi_set_frequency (spi, spi_freq); 
     l_spi->SPCR = (1 << 5); // BitEnable = 0 (8 bits/transfer), CPHA = 0
-                            // CPOL = 0 (SCK ativo em HIGH), MSTR = 1, LSBR = 1
+                            // CPOL = 0 (SCK ativo em HIGH), MSTR = 1,
                             // LSBF = 0 (Transmite do MSb para o LSb), SPIE = 0
                             // Interrupções desligadas
 
