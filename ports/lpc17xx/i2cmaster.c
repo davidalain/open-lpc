@@ -209,8 +209,8 @@ void i2cmaster_generate_stop (const I2CMaster *i2c) {
 
 	l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
 
-	if (l_i2c->I2CONSET & (1 << 5))
-		l_i2c->I2CONCLR |= (1 << 5);	// Limpa o START se estiver setado
+//	if (l_i2c->I2CONSET & (1 << 5)) // TODO: Remover em breve depois de teste
+	l_i2c->I2CONCLR |= (1 << 5);	// Limpa o START se estiver setado
 
 	l_i2c->I2CONSET |= (1 << 4);
 	l_i2c->I2CONCLR |= (1 << 4);	// Sinaliza o STOP
@@ -219,3 +219,4 @@ void i2cmaster_generate_stop (const I2CMaster *i2c) {
 #ifdef __cplusplus
 }
 #endif
+
