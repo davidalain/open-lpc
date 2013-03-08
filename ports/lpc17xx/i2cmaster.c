@@ -179,11 +179,11 @@ uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t *
 
 	l_i2c->I2DAT = ((address << 1) & ~(1 << 0));   // Envia o endereço indicando escrita (R/W bit = 0)
 	l_i2c->I2CONCLR |= (1 << 3);	// Limpa a flag SI
-	
+
 	i = 0;
 	while (length > 0) {
-		while ((l_i2c->I2CONSET & (1 << 3)) == 0);  // Espera ficar pronto para transmitir
 		l_i2c->I2DAT = data[i];
+		while ((l_i2c->I2CONSET & (1 << 3)) == 0);  // Espera ficar pronto para transmitir
 		length--; i++;
 		l_i2c->I2CONCLR |= (1 << 3);    // Limpa a flag SI
 	}
