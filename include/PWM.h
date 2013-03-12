@@ -62,7 +62,7 @@ void pwm_write_float (const pwm_t *pwm, float duty);
  * \param pwm Ponteiro para estrutura pwm_t
  * \returns Duty cycle do PWM
  */
-uint32_t pwm_read_float (const pwm_t *pwm);
+float pwm_read_float (const pwm_t *pwm);
 
 #ifdef __cplusplus
 }
