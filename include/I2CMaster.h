@@ -19,54 +19,54 @@ extern "C" {
 #include <stdint.h>
 
 /*!
- * \struct I2CMaster
+ * \struct i2cmaster_t
  * \brief Define um tipo serial RS-232. Cada arquitetura possui uma implementação deste tipo.
  */
 
 /*!
- * \fn void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num)
+ * \fn void i2cmaster_setup (i2cmaster_t *i2c, uint32_t i2c_num)
  * \brief Configura uma porta I2C em modo Master
- * \param i2c Ponteiro para estrutura I2CMaster
+ * \param i2c Ponteiro para estrutura i2cmaster_t
  * \param i2c_num Número da porta a ser utilizada
 	 * \param i2c_clk Clock de operação do I2C
  */
-void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num, uint32_t i2c_clk);
+void i2cmaster_setup (i2cmaster_t *i2c, uint32_t i2c_num, uint32_t i2c_clk);
 
 /*!
- * \fn uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, uint32_t length)
+ * \fn uint32_t i2cmaster_read (const i2cmaster_t *i2c, uint8_t address, uint8_t *data, uint32_t length)
  * \brief Lê um conjunto de bytes do endereço especificado
- * \param i2c Ponteiro para estrutura I2CMaster
+ * \param i2c Ponteiro para estrutura i2cmaster_t
  * \param address Endereço do dispositivo
  * \param data Ponteiro onde escrever os dados lidos
  * \param length Tamanho, em bytes, da leitura a ser executada
  * \returns 0 em caso de sucesso
  */
-uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, uint32_t length);
+uint32_t i2cmaster_read (const i2cmaster_t *i2c, uint8_t address, uint8_t *data, uint32_t length);
 
 /*!
- * \fn uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t data, uint32_t length)
+ * \fn uint32_t i2cmaster_write (const i2cmaster_t *i2c, uint8_t address, const uint8_t data, uint32_t length)
  * \brief Escreve um conjunto de bytes no endereço especificado
- * \param i2c Ponteiro para estrutura I2CMaster
+ * \param i2c Ponteiro para estrutura i2cmaster_t
  * \param address Endereço do dispositivo
  * \param data Ponteiro de origem dos dados
  * \param length Tamanho, em bytes, dos dados
  * \returns 0 em caso de sucesso
  */
-uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t *data, uint32_t length);
+uint32_t i2cmaster_write (const i2cmaster_t *i2c, uint8_t address, const uint8_t *data, uint32_t length);
 
 /*!
- * \fn void i2cmaster_generate_start (const I2CMaster *i2c)
+ * \fn void i2cmaster_generate_start (const i2cmaster_t *i2c)
  * \brief Gera uma condição 'start' na linha de dados
- * \param i2c Ponteiro para estrutura I2CMaster
+ * \param i2c Ponteiro para estrutura i2cmaster_t
  */
-void i2cmaster_generate_start (const I2CMaster *i2c);
+void i2cmaster_generate_start (const i2cmaster_t *i2c);
 
 /*!
- * \fn void i2cmaster_generate_stop (const I2CMaster *i2c)
+ * \fn void i2cmaster_generate_stop (const i2cmaster_t *i2c)
  * \brief Gera uma condição 'stop' na linha de dados
- * \param i2c Ponteiro para estrutura I2CMaster
+ * \param i2c Ponteiro para estrutura i2cmaster_t
  */
-void i2cmaster_generate_stop (const I2CMaster *i2c);
+void i2cmaster_generate_stop (const i2cmaster_t *i2c);
 
 /*!
  * \def I2C_100KHZ

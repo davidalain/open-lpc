@@ -71,7 +71,7 @@ static inline uint32_t digital_generic_read (const void *pin) {
 		return 0;
 }
 
-void digitalin_setup (DigitalIn *pin, uint32_t portnum, uint32_t pinnum) {
+void digitalin_setup (digitalin_t *pin, uint32_t portnum, uint32_t pinnum) {
 	LPC_GPIO_TypeDef *l_port = (LPC_GPIO_TypeDef *)portnum;
 
 	digital_general_setup (pin, portnum, pinnum);
@@ -80,11 +80,11 @@ void digitalin_setup (DigitalIn *pin, uint32_t portnum, uint32_t pinnum) {
 	l_port->FIOMASK &= ~(1 << pinnum);
 }
 
-uint32_t digitalin_read (const DigitalOut *pin) {
+uint32_t digitalin_read (const digitalin_t *pin) {
 	return digital_generic_read(pin);
 }
 
-void digitalout_setup (DigitalOut *pin, uint32_t portnum, uint32_t pinnum) {
+void digitalout_setup (digitalout_t *pin, uint32_t portnum, uint32_t pinnum) {
 	LPC_GPIO_TypeDef *l_port = (LPC_GPIO_TypeDef *)portnum;
 
 	digital_general_setup (pin, portnum, pinnum);
@@ -93,7 +93,7 @@ void digitalout_setup (DigitalOut *pin, uint32_t portnum, uint32_t pinnum) {
 	l_port->FIOMASK &= ~(1 << pinnum);
 }
 
-void digitalout_write (const DigitalOut *pin, uint32_t value) {
+void digitalout_write (const digitalout_t *pin, uint32_t value) {
 	LPC_GPIO_TypeDef *port = (LPC_GPIO_TypeDef *)pin->port;
 
 	if (value)
@@ -102,7 +102,7 @@ void digitalout_write (const DigitalOut *pin, uint32_t value) {
 		port->FIOCLR = 1 << pin->pinnum;
 }
 
-uint32_t digitalout_read (const DigitalOut *pin) {
+uint32_t digitalout_read (const digitalout_t *pin) {
 	return digital_generic_read(pin);
 }
 

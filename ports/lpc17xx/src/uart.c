@@ -53,7 +53,7 @@ static void uart_calculate_parameters (uint32_t clk_sel, uint32_t baudrate, uint
 	*mulval = baudrate % b;
 }
 
-void uart_setup (UART *uart, uint32_t uart_num, 
+void uart_setup (uart_t *uart, uint32_t uart_num, 
                   uint32_t baud, uint32_t wordsize, 
                   uint32_t parity, uint32_t stopbits) {
 
@@ -108,7 +108,7 @@ void uart_setup (UART *uart, uint32_t uart_num,
 	
 }
 
-void uart_set_baud (UART *uart, uint32_t baud) {
+void uart_set_baud (uart_t *uart, uint32_t baud) {
 	uint16_t dl;
 	uint8_t divaddval, mulval;
 	uint32_t clk_sel;
@@ -142,7 +142,7 @@ void uart_set_baud (UART *uart, uint32_t baud) {
 //	l_uart->FDR = ((mulval & 0x0F) << 4) | (divaddval & 0x0F);
 }
 
-void uart_set_wordsize (UART *uart, uint32_t wordsize) {
+void uart_set_wordsize (uart_t *uart, uint32_t wordsize) {
 	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 	
 	switch (wordsize) {
@@ -167,7 +167,7 @@ void uart_set_wordsize (UART *uart, uint32_t wordsize) {
 	}
 }
 
-void uart_set_parity (UART *uart, uint32_t parity) {
+void uart_set_parity (uart_t *uart, uint32_t parity) {
 	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 
 	switch (parity) {
@@ -188,7 +188,7 @@ void uart_set_parity (UART *uart, uint32_t parity) {
 	}
 }
 
-void uart_set_stopbits (UART *uart, uint32_t stopbits) {
+void uart_set_stopbits (uart_t *uart, uint32_t stopbits) {
 	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 
 	switch (stopbits) {
@@ -203,7 +203,7 @@ void uart_set_stopbits (UART *uart, uint32_t stopbits) {
 	}
 }
 
-uint32_t uart_write (const UART *uart, const uint8_t *data, uint32_t length) {
+uint32_t uart_write (const uart_t *uart, const uint8_t *data, uint32_t length) {
 
 	uint32_t i;
 	LPC_UART_TypeDef *l_uart;
@@ -219,7 +219,7 @@ uint32_t uart_write (const UART *uart, const uint8_t *data, uint32_t length) {
 	return i;
 }
 
-uint32_t uart_read (const UART *uart, uint8_t *data, uint32_t length) {
+uint32_t uart_read (const uart_t *uart, uint8_t *data, uint32_t length) {
 
 	uint32_t i;
 	LPC_UART_TypeDef *l_uart;
@@ -235,7 +235,7 @@ uint32_t uart_read (const UART *uart, uint8_t *data, uint32_t length) {
 	return i;
 }
 
-uint32_t uart_data_available (const UART *uart) {
+uint32_t uart_data_available (const uart_t *uart) {
 	LPC_UART_TypeDef *l_uart = (LPC_UART_TypeDef *)uart->uart;
 	return (l_uart->LSR & 0x01);
 }

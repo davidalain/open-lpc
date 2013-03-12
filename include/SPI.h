@@ -19,36 +19,36 @@ extern "C" {
 #include <stdint.h>
 
 /*!
- * \struct SPI
- * \brief Define um tipo SPI. Cada arquitetura possui uma implementação deste tipo.
+ * \struct spi_t
+ * \brief Define um tipo spi_t. Cada arquitetura possui uma implementação deste tipo.
  */
 
 /*!
- * \fn void spi_setup (SPI *spi, uint32_t spi_num, uint32_t spi_freq)
+ * \fn void spi_setup (spi_t *spi, uint32_t spi_num, uint32_t spi_freq)
  * \brief Configura uma porta SPI
- * \param spi Ponteiro para estrutura SPI
+ * \param spi Ponteiro para estrutura spi_t
  * \param spi_num Número da porta a ser utilizada
  * \param spi_freq Baud rate da porta
  */
-void spi_setup (SPI *spi, uint32_t spi_num, uint32_t spi_freq);
+void spi_setup (spi_t *spi, uint32_t spi_num, uint32_t spi_freq);
 
 /*!
- * \fn void spi_set_frequency (SPI *spi, uint32_t freq)
+ * \fn void spi_set_frequency (spi_t *spi, uint32_t freq)
  * \brief Configura somente a frequencia de operação
- * \param spi Ponteiro para estrutura SPI
+ * \param spi Ponteiro para estrutura spi_t
  * \param freq Novo valor da frequencia em Hz
  */
-void spi_set_frequency (const SPI *spi, uint32_t freq);
+void spi_set_frequency (const spi_t *spi, uint32_t freq);
 
 /*!
- * \fn uint32_t spi_write (const SPI *spi, const uint8_t *data, uint8_t *recv, uint32_t length)
+ * \fn uint32_t spi_write (const spi_t *spi, const uint8_t *data, uint8_t *recv, uint32_t length)
  * \brief Escreve vários bytes pela porta SPI
- * \param spi Ponteiro para estrutura SPI
+ * \param spi Ponteiro para estrutura spi_t
  * \param data Ponteiro para array de bytes de saída
  * \param length Tamanho de data
  * \returns Quantidade total de bytes escritos
  */
-uint32_t spi_write (const SPI *spi, const uint8_t *data, uint32_t length);
+uint32_t spi_write (const spi_t *spi, const uint8_t *data, uint32_t length);
 
 #ifdef __cplusplus
 }

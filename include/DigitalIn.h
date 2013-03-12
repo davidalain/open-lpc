@@ -19,26 +19,26 @@ extern "C" {
 #include <stdint.h>
 
 /*!
- * \struct DigitalIn
+ * \struct digitalin_t
  * \brief Define um tipo pino de entrada digital. Cada arquitetura possui uma implementação deste tipo.
  */
 
 /*!
- * \fn void digitalin_setup (DigitalIn *pin, uint32_t portnum, uint32_t pinnum)
+ * \fn void digitalin_setup (digitalin_t *pin, uint32_t portnum, uint32_t pinnum)
  * \brief Configura um pino como entrada digital
- * \param pin Ponteiro para estrutura DigitalIn
+ * \param pin Ponteiro para estrutura digitalin_t
  * \param portnum Número da porta ao qual o pino pertence
  * \param pinnum Número correspondente do pino na porta (começando por zero)
  */
-void digitalin_setup (DigitalIn *pin, uint32_t portnum, uint32_t pinnum);
+void digitalin_setup (digitalin_t *pin, uint32_t portnum, uint32_t pinnum);
 
 /*!
- * \fn uint32_t digitalin_read (const DigitalIn *pin)
+ * \fn uint32_t digitalin_read (const digitalin_t *pin)
  * \brief Lê o valor de um pino digital
- * \param pin Ponteiro para estrutura DigitalIn
+ * \param pin Ponteiro para estrutura digitalin_t
  * \returns O valor 1 (um) para nível lógico alto ou 0 (zero) para nível lógico baixo
  */
-uint32_t digitalin_read (const DigitalOut *pin);
+uint32_t digitalin_read (const digitalin_t *pin);
 
 #ifdef __cplusplus
 }

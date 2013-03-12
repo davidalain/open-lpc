@@ -19,34 +19,34 @@ extern "C" {
 #include <stdint.h>
 
 /*!
- * \struct DigitalOut
+ * \struct digitalout_t
  * \brief Define um tipo pino de saída digital. Cada arquitetura possui uma implementação deste tipo.
  */
 
 /*!
- * \fn void digitalout_setup (DigitalOut *pin, uint32_t portnum, uint32_t pinnum)
+ * \fn void digitalout_setup (digitalout_t *pin, uint32_t portnum, uint32_t pinnum)
  * \brief Configura um pino como saída digital
- * \param pin Ponteiro para estrutura DigitalOut
+ * \param pin Ponteiro para estrutura digitalout_t
  * \param portnum Número da porta ao qual o pino pertence
  * \param pinnum Número correspondente do pino na porta (começando por zero)
  */
-void digitalout_setup (DigitalOut *pin, uint32_t portnum, uint32_t pinnum);
+void digitalout_setup (digitalout_t *pin, uint32_t portnum, uint32_t pinnum);
 
 /*!
- * \fn void digitalout_write (const DigitalOut *pin, uint32_t value)
+ * \fn void digitalout_write (const digitalout_t *pin, uint32_t value)
  * \brief Escreve o valor de um pino digital de saída
- * \param pin Ponteiro para estrutura DigitalOut
+ * \param pin Ponteiro para estrutura digitalout_t
  * \param value Valor a ser escrito na saída. 0 (zero) para nível lógico baixo. Diferetente de zero para nível lógico alto
  */
-void digitalout_write (const DigitalOut *pin, uint32_t value);
+void digitalout_write (const digitalout_t *pin, uint32_t value);
 
 /*!
- * \fn uint32_t digitalout_read (const DigitalOut *pin)
+ * \fn uint32_t digitalout_read (const digitalout_t *pin)
  * \brief Lê o valor de um pino digital
- * \param pin Ponteiro para estrutura DigitalOut
+ * \param pin Ponteiro para estrutura digitalout_t
  * \returns O valor 1 (um) para nível lógico alto ou 0 (zero) para nível lógico baixo
  */
-uint32_t digitalout_read (const DigitalOut *pin);
+uint32_t digitalout_read (const digitalout_t *pin);
 
 #ifdef __cplusplus
 }

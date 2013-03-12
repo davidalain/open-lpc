@@ -15,7 +15,7 @@ extern "C" {
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
-void spi_setup (SPI *spi, uint32_t spi_num, uint32_t spi_freq) {
+void spi_setup (spi_t *spi, uint32_t spi_num, uint32_t spi_freq) {
 
     LPC_SPI_TypeDef *l_spi;
     
@@ -36,7 +36,7 @@ void spi_setup (SPI *spi, uint32_t spi_num, uint32_t spi_freq) {
 
 }
 
-void spi_set_frequency (const SPI *spi, uint32_t freq) {
+void spi_set_frequency (const spi_t *spi, uint32_t freq) {
 
     uint32_t pclk, clk_sel;
     LPC_SPI_TypeDef *l_spi;
@@ -76,7 +76,7 @@ void spi_set_frequency (const SPI *spi, uint32_t freq) {
 
 }
 
-uint32_t spi_write (const SPI *spi, const uint8_t *data, uint32_t length) {
+uint32_t spi_write (const spi_t *spi, const uint8_t *data, uint32_t length) {
 
     uint32_t i;
     LPC_SPI_TypeDef *l_spi;

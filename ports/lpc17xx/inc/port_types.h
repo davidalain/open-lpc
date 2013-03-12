@@ -16,12 +16,12 @@ extern "C" {
 typedef struct {
 	uint32_t port;		// Endereco base da porta
 	uint32_t pinnum;	// Numero do pino (0 a 31)
-} DigitalOut;
+} digitalout_t;
 
 typedef struct {
 	uint32_t port;		// Endereco base da porta
 	uint32_t pinnum;	// Numero do pino (0 a 31)
-} DigitalIn;
+} digitalin_t;
 
 typedef struct {
 	uint32_t uart;		// Endereco base da UART
@@ -29,15 +29,21 @@ typedef struct {
 	uint8_t wordsize;	// 8, 7, 6 ou 5 bits
 	uint8_t parity;		// N, 1 ou 2 bits de paridade
 	uint8_t stopbits;	// 1 ou 2 stop bits
-} UART;
+} uart_t;
 
 typedef struct {
 	uint32_t i2c;
-} I2CMaster;
+} i2cmaster_t;
 
 typedef struct {
 	uint32_t spi;
-} SPI;
+	uint32_t freq;
+} spi_t;
+
+typedef struct {
+	uint32_t pwm;
+	uint32_t freq;
+} pwm_t;
 
 #ifdef __cplusplus
 }

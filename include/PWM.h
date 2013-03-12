@@ -19,41 +19,50 @@ extern "C" {
 #include <stdint.h>
 
 /*!
- * \struct PWM
- * \brief Define um tipo serial RS-232. Cada arquitetura possui uma implementação deste tipo.
+ * \struct pwm_t
+ * \brief Define um tipo pwm_t. Cada arquitetura possui uma implementação deste tipo.
  */
 
 /*!
- * \fn void pwm_setup (PWM *pwm, uint32_t pin_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits)
- * \brief Configura uma porta serial
- * \param pwm Ponteiro para estrutura PWM
- * \param pwm_num Número da porta a ser utilizada
- * \param baud Baud rate da porta
- * \param wordsize Tamanho da palavra da serial: 5, 6, 7 ou 8 bits
- * \param parity Paridade da porta serial: PAR_NONE, PAR_ODD, PAR_EVEN
- * \param stopbits Número de stopbits: 1 ou 2
+ * \fn void pwm_setup (pwm_t *pwm, uint32_t pin_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits)
+ * \brief Configura um PWM
+ * \param pwm Ponteiro para estrutura pwm_t
+ * \param pwm_num Número do PWM a ser utilizado
+ * \param freq Frequência de operação do PWM
  */
-void pwm_setup (PWM *pwm, uint32_t pwm_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits);
+void pwm_setup (pwm_t *pwm, uint32_t pwm_num, uint32_t freq);
 
 /*!
- * \fn uint32_t pwm_write (const PWM *pwm, const uint8_t *data, uint32_t length)
- * \brief Escreve vários bytes pela porta serial
- * \param pwm Ponteiro para estrutura PWM
- * \param data Ponteiro para array de bytes
- * \param length Tamanho de data
- * \returns Quantidade total de bytes escritos
+ * \fn uint32_t pwm_write (const pwm_t *pwm, uint32_t duty)
+ * \brief Modifica o duty cycle do sinal PWM
+ * \param pwm Ponteiro para estrutura pwm_t
+ * \param duty Valor do novo duty cycle
  */
-uint32_t pwm_write (const PWM *pwm, const uint8_t *data, uint32_t length);
+void pwm_write (const pwm_t *pwm, uint32_t duty);
 
 /*!
- * \fn void pwm_read (const PWM *pwm)
- * \brief Lê vários bytes da porta serial
- * \param pwm Ponteiro para estrutura PWM
- * \param data Ponteiro para array de bytes
- * \param length Tamanho de data
- * \returns Quantidade total de bytes escritos
+ * \fn void pwm_read (const pwm_t *pwm)
+ * \brief Lê o valor do duty cycle do PWM
+ * \param pwm Ponteiro para estrutura pwm_t
+ * \returns Duty cycle do PWM
  */
-uint32_t pwm_read (const PWM *pwm, uint8_t *data, uint32_t length);
+uint32_t pwm_read (const pwm_t *pwm);
+
+/*!
+ * \fn uint32_t pwm_write_float (const pwm_t *pwm, float duty)
+ * \brief Modifica o duty cycle do sinal PWM
+ * \param pwm Ponteiro para estrutura pwm_t
+ * \param duty Valor do novo duty cycle
+ */
+void pwm_write_float (const pwm_t *pwm, float duty);
+
+/*!
+ * \fn void pwm_read_float (const pwm_t *pwm)
+ * \brief Lê o valor do duty cycle do PWM
+ * \param pwm Ponteiro para estrutura pwm_t
+ * \returns Duty cycle do PWM
+ */
+uint32_t pwm_read_float (const pwm_t *pwm);
 
 #ifdef __cplusplus
 }
