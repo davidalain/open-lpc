@@ -45,6 +45,13 @@ typedef struct {
 	uint32_t freq;
 } pwm_t;
 
+typedef struct {
+	uint32_t timer;
+	uint32_t prescaler;
+	uint32_t div;
+	uint32_t clksel;
+} timer_t;
+
 #ifdef __cplusplus
 }
 #endif

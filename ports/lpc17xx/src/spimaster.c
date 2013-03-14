@@ -20,7 +20,7 @@ void spi_setup (spi_t *spi, uint32_t spi_num, uint32_t spi_freq) {
     LPC_SPI_TypeDef *l_spi;
     
     spi->spi = spi_num;
-	spi->freq = freq;
+    spi->freq = spi_freq;
     l_spi = (LPC_SPI_TypeDef *)spi_num;
 
     LPC_SC->PCONP |= (1 << 8);  // Ativa a SPI. No reset, o SPI já está ativo
