@@ -51,14 +51,17 @@ void timer_setup (timer_t *timer, uint32_t timer_num, uint32_t prescaler, uint32
 
 	l_timer->CTCR = 0x00;		// Configura o timer/counter como timer
 	timer_set_prescaler (timer, prescaler, div);
+	l_timer->IR = 0xFFFFFFFF;   // Zera as interrupções pendentes
 }
 
 void timer_set_prescaler (timer_t *timer, uint32_t prescaler, uint32_t div) {
 	LPC_TIM_TypeDef *l_timer;
 
 	l_timer = (LPC_TIM_TypeDef *)timer->timer;
-	l_timer->PR = prescaler;	// Configura o prescaler
-	l_timer->PC = div;			// Condfigura o divisor
+	l_timer->PR = prescaler - 1;	// Configura o prescaler
+	l_timer->PC = div;				// Condfigura o divisor
+	timer->prescaler = prescaler;
+	timer->div = div;
 }
 
 void timer_reset (const timer_t *timer) {
