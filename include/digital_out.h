@@ -1,5 +1,5 @@
-#ifndef DIGITALOUT_H
-#define DIGITALOUT_H
+#ifndef OPENLPC_DIGITALOUT_H
+#define OPENLPC_DIGITALOUT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +16,6 @@ extern "C" {
  */
 
 #include <port_types.h>
-#include <stdint.h>
 
 /*!
  * \struct digitalout_t
@@ -30,7 +29,7 @@ extern "C" {
  * \param portnum Número da porta ao qual o pino pertence
  * \param pinnum Número correspondente do pino na porta (começando por zero)
  */
-void digitalout_setup (digitalout_t *pin, uint32_t portnum, uint32_t pinnum);
+void digitalout_setup (digital_io_t *pin, uint32_t portnum, uint32_t pinnum);
 
 /*!
  * \fn void digitalout_write (const digitalout_t *pin, uint32_t value)
@@ -38,7 +37,7 @@ void digitalout_setup (digitalout_t *pin, uint32_t portnum, uint32_t pinnum);
  * \param pin Ponteiro para estrutura digitalout_t
  * \param value Valor a ser escrito na saída. 0 (zero) para nível lógico baixo. Diferetente de zero para nível lógico alto
  */
-void digitalout_write (const digitalout_t *pin, uint32_t value);
+void digitalout_write (const digital_io_t *pin, uint32_t value);
 
 /*!
  * \fn uint32_t digitalout_read (const digitalout_t *pin)
@@ -46,7 +45,7 @@ void digitalout_write (const digitalout_t *pin, uint32_t value);
  * \param pin Ponteiro para estrutura digitalout_t
  * \returns O valor 1 (um) para nível lógico alto ou 0 (zero) para nível lógico baixo
  */
-uint32_t digitalout_read (const digitalout_t *pin);
+uint32_t digitalout_read (const digital_io_t *pin);
 
 #ifdef __cplusplus
 }

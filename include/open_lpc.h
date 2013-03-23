@@ -5,11 +5,11 @@
 extern "C" {
 #endif
 
-#include <DigitalIn.h>
-#include <DigitalOut.h>
-#include <UART.h>
-#include <SPI.h>
-#include <Timer.h>
+#include <digital_in.h>
+#include <digital_out.h>
+#include <uart.h>
+#include <spi.h>
+#include <timer.h>
 
 /*!
  * \file OpenLPC.h

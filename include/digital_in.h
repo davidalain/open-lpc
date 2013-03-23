@@ -1,5 +1,5 @@
-#ifndef DIGITALIN_H
-#define DIGITALIN_H
+#ifndef OPENLPC_DIGITALIN_H
+#define OPENLPC_DIGITALIN_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +16,6 @@ extern "C" {
  */
 
 #include <port_types.h>
-#include <stdint.h>
 
 /*!
  * \struct digitalin_t
@@ -30,7 +29,7 @@ extern "C" {
  * \param portnum Número da porta ao qual o pino pertence
  * \param pinnum Número correspondente do pino na porta (começando por zero)
  */
-void digitalin_setup (digitalin_t *pin, uint32_t portnum, uint32_t pinnum);
+void digitalin_setup (digital_io_t *pin, void* portnum, uint32_t pinnum);
 
 /*!
  * \fn uint32_t digitalin_read (const digitalin_t *pin)
@@ -38,7 +37,7 @@ void digitalin_setup (digitalin_t *pin, uint32_t portnum, uint32_t pinnum);
  * \param pin Ponteiro para estrutura digitalin_t
  * \returns O valor 1 (um) para nível lógico alto ou 0 (zero) para nível lógico baixo
  */
-uint32_t digitalin_read (const digitalin_t *pin);
+uint32_t digitalin_read (const digital_io_t *pin);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
-#ifndef I2CMASTER_H
-#define I2CMASTER_H
+#ifndef OPENLPC_I2CMASTER_H
+#define OPENLPC_I2CMASTER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +16,6 @@ extern "C" {
  */
 
 #include <port_types.h>
-#include <stdint.h>
 
 /*!
  * \struct i2cmaster_t
