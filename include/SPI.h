@@ -1,5 +1,5 @@
-#ifndef SPI_H
-#define SPI_H
+#ifndef OPENLPC_SPI_H
+#define OPENLPC_SPI_H
 
 #ifdef __cplusplus
 extern "C" {

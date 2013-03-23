@@ -1,5 +1,5 @@
-#ifndef UART_H
-#define UART_H
+#ifndef OPENLPC_UART_H
+#define OPENLPC_UART_H
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,5 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef OPENLPC_TIMER_H
+#define OPENLPC_TIMER_H
 
 #ifdef __cplusplus
 extern "C" {
