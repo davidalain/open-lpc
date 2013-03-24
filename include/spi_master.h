@@ -1,5 +1,5 @@
-#ifndef OPENLPC_SPI_H
-#define OPENLPC_SPI_H
+#ifndef OPENLPC_SPI_MASTER_H
+#define OPENLPC_SPI_MASTER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,7 +30,7 @@ extern "C" {
  * \param spi_num Número da porta a ser utilizada
  * \param spi_freq Baud rate da porta
  */
-void spi_setup (spi_t *spi, uint32_t spi_num, uint32_t spi_freq);
+void spi_setup (spi_t *spi, void *spi_num, uint32_t spi_freq);
 
 /*!
  * \fn void spi_set_frequency (spi_t *spi, uint32_t freq)
