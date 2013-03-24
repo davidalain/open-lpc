@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 /*!
- * \file UART.h
+ * \file uart.h
  * Tipo para interface RS-232 (serial)
  * \details Contém funções para configurar e utilizar uma porta serial RS-232
  * \author Cristóvão Zuppardo Rufino
@@ -33,7 +33,7 @@ extern "C" {
  * \param parity Paridade da porta serial: PAR_NONE, PAR_ODD, PAR_EVEN
  * \param stopbits Número de stopbits: 1 ou 2
  */
-void uart_setup (uart_t *uart, uint32_t uart_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits);
+void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits);
 
 /*!
  * \fn void uart_set_baud (uart_t *uart, uint32_t baud)
@@ -96,20 +96,20 @@ uint32_t uart_read (const uart_t *uart, uint8_t *data, uint32_t length);
 uint32_t uart_data_available (const uart_t *uart);
 
 /*! 
- * \def PAR_NONE
+ * \def PARITY_NONE
  * Define transmissão sem paridade. Equivalente ao valor 0 (zero)
  */
-#define PAR_NONE 0
+#define PARITY_NONE 0
 /*! 
- * \def PAR_ODD
+ * \def PARITY_ODD
  * Define transmissão com paridade ímpar. Equivalente ao valor 1 (um)
  */
-#define PAR_ODD 1
+#define PARITY_ODD 1
 /*! 
- * \def PAR_EVEN
+ * \def PARITY_EVEN
  * Define transmissão com paridade par. Equivalente ao valor 2 (dois)
  */
-#define PAR_EVEN 2
+#define PARITY_EVEN 2
 
 #ifdef __cplusplus
 }

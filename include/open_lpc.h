@@ -8,7 +8,7 @@ extern "C" {
 #include <digital_in.h>
 #include <digital_out.h>
 #include <uart.h>
-#include <spi.h>
+#include <spi_master.h>
 #include <timer.h>
 
 /*!

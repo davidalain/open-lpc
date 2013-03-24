@@ -31,7 +31,7 @@ extern "C" {
  * \param prescaler Valor do prescaler
  * \param div Valor do divisor
  */
-void timer_setup (timer_t *timer, uint32_t timer_num, uint32_t prescaler, uint32_t div);
+void timer_setup (timer_t *timer, void *timer_num, uint32_t prescaler, uint32_t div);
 
 /*!
  * \fn void timer_set_prescaler (timer_t *timer, uint32_t prescaler)

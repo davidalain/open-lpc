@@ -1,12 +1,12 @@
-#ifndef OPENLPC_DIGITALOUT_H
-#define OPENLPC_DIGITALOUT_H
+#ifndef OPENLPC_DIGITAL_OUT_H
+#define OPENLPC_DIGITAL_OUT_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*!
- * \file DigitalOut.h
+ * \file digital_out.h
  * Tipo para interface com pinos digitais de saída.
  * \details Contém funções para configurar e utilizar um pino como entrada digital
  * \author Cristóvão Zuppardo Rufino
@@ -29,7 +29,7 @@ extern "C" {
  * \param portnum Número da porta ao qual o pino pertence
  * \param pinnum Número correspondente do pino na porta (começando por zero)
  */
-void digitalout_setup (digital_io_t *pin, uint32_t portnum, uint32_t pinnum);
+void digitalout_setup (digital_io_t *pin, void* portnum, uint32_t pinnum);
 
 /*!
  * \fn void digitalout_write (const digitalout_t *pin, uint32_t value)

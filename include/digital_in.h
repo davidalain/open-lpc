@@ -1,12 +1,12 @@
-#ifndef OPENLPC_DIGITALIN_H
-#define OPENLPC_DIGITALIN_H
+#ifndef OPENLPC_DIGITAL_IN_H
+#define OPENLPC_DIGITAL_IN_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*!
- * \file DigitalIn.h
+ * \file digital_in.h
  * Tipo para interface com pinos digitais de entrada.
  * \details Contém funções para configurar e utilizar um pino como entrada digital
  * \author Cristóvão Zuppardo Rufino

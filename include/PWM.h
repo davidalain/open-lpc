@@ -30,7 +30,7 @@ extern "C" {
  * \param pwm_num Número do PWM a ser utilizado
  * \param freq Frequência de operação do PWM
  */
-void pwm_setup (pwm_t *pwm, uint32_t pwm_num, uint32_t freq);
+void pwm_setup (pwm_t *pwm, void *pwm_num, uint32_t freq);
 
 /*!
  * \fn uint32_t pwm_write (const pwm_t *pwm, uint32_t duty)
