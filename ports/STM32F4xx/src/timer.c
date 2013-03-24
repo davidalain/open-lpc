@@ -1,8 +1,8 @@
 /*
  * timer.c
  * Funcões para objeto timer_t
- * Author: Cristóvão Zuppardo Rufino
- * Version LPC17xx 0.1
+ * Author: David Alain do Nascimento
+ * Version STM32F407xx 0.1
  * Date: 13/03/2013
  * Copyright: Cristóvão e David
  */

@@ -1,8 +1,8 @@
 /*
  * uart.c
  * Funcões para objeto UART
- * Author: Cristóvão Zuppardo Rufino
- * Version LPC17xx 0.1
+ * Author: David Alain do Nascimento
+ * Version STM32F407xx 0.1
  * Date: 16/02/2013
  * Copyright: Cristóvão e David
  */
@@ -11,11 +11,9 @@
 extern "C" {
 #endif
 
-#include <UART.h>
+#include <uart.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
-
-#define ASSERT(exp)						(exp == 1 ? (void)0 : while(1))
 
 #define IS_PARITY_VALID(parity)			((parity == PAR_NONE) || (parity == PAR_ODD) || (parity == PAR_EVEN))
 #define IS_STOP_BITS_VALID(stopbits)	((stopbits == 1) || (stopbits == 2))
@@ -24,8 +22,7 @@ extern "C" {
 static USART_InitTypeDef USART_InitStruct;
 
 
-
-void uart_setup (UART *uart, uint32_t uart_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits) {
+void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits) {
 
 	if(uart == NULL)
 		return;
@@ -61,7 +58,7 @@ void uart_setup (UART *uart, uint32_t uart_num, uint32_t baud, uint32_t wordsize
 
 }
 
-void uart_set_baud (UART *uart, uint32_t baud) {
+void uart_set_baud (uart_t *uart, uint32_t baud) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 
@@ -70,7 +67,7 @@ void uart_set_baud (UART *uart, uint32_t baud) {
 	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
 }
 
-void uart_set_wordsize (UART *uart, uint32_t wordsize) {
+void uart_set_wordsize (uart_t *uart, uint32_t wordsize) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 
@@ -83,7 +80,7 @@ void uart_set_wordsize (UART *uart, uint32_t wordsize) {
 	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
 }
 
-void uart_set_parity (UART *uart, uint32_t parity) {
+void uart_set_parity (uart_t *uart, uint32_t parity) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 
@@ -97,7 +94,7 @@ void uart_set_parity (UART *uart, uint32_t parity) {
 	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
 }
 
-void uart_set_stopbits (UART *uart, uint32_t stopbits) {
+void uart_set_stopbits (uart_t *uart, uint32_t stopbits) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 
@@ -110,7 +107,7 @@ void uart_set_stopbits (UART *uart, uint32_t stopbits) {
 	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
 }
 
-uint32_t uart_write (const UART *uart, const uint8_t *data, uint32_t length) {
+uint32_t uart_write (const uart_t *uart, const uint8_t *data, uint32_t length) {
 
 	uint32_t i;
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
@@ -123,7 +120,7 @@ uint32_t uart_write (const UART *uart, const uint8_t *data, uint32_t length) {
 	return i;
 }
 
-uint32_t uart_read (const UART *uart, uint8_t *data, uint32_t length) {
+uint32_t uart_read (const uart_t *uart, uint8_t *data, uint32_t length) {
 
 	uint32_t i;
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
@@ -140,7 +137,7 @@ uint32_t uart_read (const UART *uart, uint8_t *data, uint32_t length) {
 	return i;
 }
 
-uint32_t uart_data_available (const UART *uart) {
+uint32_t uart_data_available (const uart_t *uart) {
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 	return (USART_GetITStatus( usart_typedef, USART_IT_RXNE ) == SET);
 }
