@@ -1,5 +1,5 @@
-#ifndef PORT_TYPES_H
-#define PORT_TYPES_H
+#ifndef OPENLPC_PORT_TYPES_H
+#define OPENLPC_PORT_TYPES_H
 
 /*
  * port_types.h
@@ -12,41 +12,37 @@ extern "C" {
 
 #include <stdint.h>
 
-// TODO: Talvez juntar DigitalOut e DigitalIn na mesma estrutura?
+// TODO: Talvez juntar DigitalOut e DigitalIn na mesma estrutura? SIM!!
 typedef struct {
-	uint32_t port;		// Endereco base da porta
+	void* port;			// Endereco base da porta
 	uint32_t pinnum;	// Numero do pino (0 a 31)
-} digitalout_t;
+} digital_io_t;
 
 typedef struct {
-	uint32_t port;		// Endereco base da porta
-	uint32_t pinnum;	// Numero do pino (0 a 31)
-} digitalin_t;
-
-typedef struct {
-	uint32_t uart;		// Endereco base da UART
+	void* uart;			// Endereco base da UART
 	uint32_t baudrate;	// Baudrate
-	uint8_t wordsize;	// 8, 7, 6 ou 5 bits
+	uint8_t wordsize;	// 9, 8, 7, 6 ou 5 bits
 	uint8_t parity;		// N, 1 ou 2 bits de paridade
 	uint8_t stopbits;	// 1 ou 2 stop bits
 } uart_t;
 
 typedef struct {
-	uint32_t i2c;
+	void* i2c;
+	uint32_t freq;
 } i2cmaster_t;
 
 typedef struct {
-	uint32_t spi;
+	void* spi;
 	uint32_t freq;
 } spi_t;
 
 typedef struct {
-	uint32_t pwm;
+	void* pwm;
 	uint32_t freq;
 } pwm_t;
 
 typedef struct {
-	uint32_t timer;
+	void* timer;
 	uint32_t prescaler;
 	uint32_t div;
 	uint32_t clksel;
