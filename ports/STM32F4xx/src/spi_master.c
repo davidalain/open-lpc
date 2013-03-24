@@ -1,8 +1,8 @@
 /*
  * spimaster.c
  * Funcões para objeto UART
- * Author: Cristóvão Zuppardo Rufino
- * Version LPC17xx 0.1
+ * Author: David Alain do Nascimento
+ * Version STM32F407xx 0.1
  * Date: 01/03/2013
  * Copyright: Cristóvão e David
  */
@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include <SPI.h>
+#include <spi_master.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
 

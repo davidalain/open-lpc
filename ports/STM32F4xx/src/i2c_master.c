@@ -1,8 +1,8 @@
 /*
  * i2cmaster.c
  * Funcões para I2C Master
- * Author: Cristóvão Zuppardo Rufino
- * Version LPC17xx 0.1
+ * Author: David Alain do Nascimento
+ * Version STM32F407xx 0.1
  * Date: 20/02/2013
  * Copyright: Cristóvão e David
  */
@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include <I2CMaster.h>
+#include <i2c_master.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
 
@@ -33,7 +33,7 @@ extern "C" {
 #define MR_BYTE_RECEIVED_ACK 				0x50
 #define MR_BYTE_RECEIVED_NACK 				0x58
 
-static void i2cmaster_set_clock (const I2CMaster *i2c, uint32_t i2c_clk) {
+static void i2cmaster_set_clock (const i2cmaster_t *i2c, uint32_t i2c_clk) {
 	uint32_t clk_sel, pclk;
 	uint16_t scl_hl;
 	I2C_InitTypeDef *l_i2c;
@@ -74,7 +74,7 @@ static void i2cmaster_set_clock (const I2CMaster *i2c, uint32_t i2c_clk) {
 	l_i2c->I2SCLL = (scl_hl - l_i2c->I2SCLH); // Coloca o I2C com 50% de duty no clock
 }
 	
-void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num, uint32_t i2c_clk) {
+void i2cmaster_setup (i2cmaster_t *i2c, void *i2c_num, uint32_t i2c_clk) {
 	LPC_I2C_TypeDef *l_i2c;
 
 	i2c->i2c = i2c_num;
@@ -143,7 +143,7 @@ void i2cmaster_setup (I2CMaster *i2c, uint32_t i2c_num, uint32_t i2c_clk) {
 	l_i2c->I2CONSET |= (1 << 6);	// Ativa o I2C
 }
 
-uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, uint32_t length) {
+uint32_t i2cmaster_read (const i2cmaster_t *i2c, uint8_t address, uint8_t *data, uint32_t length) {
 
 	uint32_t i;
 	LPC_I2C_TypeDef *l_i2c;
@@ -168,7 +168,7 @@ uint32_t i2cmaster_read (const I2CMaster *i2c, uint8_t address, uint8_t *data, u
 	return i;   // Retorna o total lido
 }
 
-uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t *data, uint32_t length) {
+uint32_t i2cmaster_write (const i2cmaster_t *i2c, uint8_t address, const uint8_t *data, uint32_t length) {
 
 	uint32_t i;
 	LPC_I2C_TypeDef *l_i2c;
@@ -191,7 +191,7 @@ uint32_t i2cmaster_write (const I2CMaster *i2c, uint8_t address, const uint8_t *
 	return i;
 }
 
-void i2cmaster_generate_start (const I2CMaster *i2c) {
+void i2cmaster_generate_start (const i2cmaster_t *i2c) {
 	LPC_I2C_TypeDef *l_i2c;
 
 	l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
@@ -204,7 +204,7 @@ void i2cmaster_generate_start (const I2CMaster *i2c) {
 	l_i2c->I2CONCLR |= (1 << 5);	// Limpa o START
 }
 
-void i2cmaster_generate_stop (const I2CMaster *i2c) {
+void i2cmaster_generate_stop (const i2cmaster_t *i2c) {
 	LPC_I2C_TypeDef *l_i2c;
 
 	l_i2c = (LPC_I2C_TypeDef *)i2c->i2c;
