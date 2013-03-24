@@ -11,11 +11,11 @@
 extern "C" {
 #endif
 
-#include <SPI.h>
+#include <spi_master.h>
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
-void spi_setup (spi_t *spi, uint32_t spi_num, uint32_t spi_freq) {
+void spi_setup (spi_t *spi, void* spi_num, uint32_t spi_freq) {
 
     LPC_SPI_TypeDef *l_spi;
     

@@ -7,11 +7,11 @@
  * Copyright: Cristóvão e David
  */
 
-#include <Timer.h>
+#include <timer.h>
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
-void timer_setup (timer_t *timer, uint32_t timer_num, uint32_t prescaler, uint32_t div) {
+void timer_setup (timer_t *timer, void *timer_num, uint32_t prescaler, uint32_t div) {
 
 	LPC_TIM_TypeDef *l_timer;
 

@@ -7,11 +7,11 @@
  * Copyright: Cristóvão e David
  */
 
-#include <PWM.h>
+#include <pwm.h>
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
-void pwm_setup (pwm_t *pwm, uint32_t pwm_num, uint32_t freq) {
+void pwm_setup (pwm_t *pwm, void *pwm_num, uint32_t freq) {
 
 }
 

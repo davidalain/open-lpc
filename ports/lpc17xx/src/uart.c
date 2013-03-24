@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include <UART.h>
+#include <uart.h>
 #include <LPC17xx.h>
 #include <system_LPC17xx.h>
 
@@ -53,7 +53,7 @@ static void uart_calculate_parameters (uint32_t clk_sel, uint32_t baudrate, uint
 	*mulval = baudrate % b;
 }
 
-void uart_setup (uart_t *uart, uint32_t uart_num, 
+void uart_setup (uart_t *uart, void *uart_num,
                   uint32_t baud, uint32_t wordsize, 
                   uint32_t parity, uint32_t stopbits) {
 
