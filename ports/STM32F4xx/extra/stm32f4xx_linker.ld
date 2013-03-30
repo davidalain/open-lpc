@@ -1,8 +1,12 @@
+/*
+ * Linker file para STM32F4xx para ser utilizado com GCC Compiler for ARM
+ * Autor: Cristóvão Zuppardo Rufino <cristovaozr@gmail.com>
+ */
 
 MEMORY
 {
-	ROM (rx)	: ORIGIN = 0x00000000, LENGTH = 1024K
-	SRAM (rwx)	: ORIGIN = 0x20000000, LENGTH = 192K
+	ROM1 (rx)	: ORIGIN = 0x08000000, LENGTH = 1024K
+	SRAM1 (rwx)	: ORIGIN = 0x20000000, LENGTH = 128K
 }
 
 SECTIONS
@@ -14,7 +18,7 @@ SECTIONS
 		*(.text)
 		*(.rodata)
 		_etext = .;
-	} > ROM
+	} > ROM1
 
 	.data : AT(ADDR(.text) + SIZEOF(.text))
 	{
@@ -22,7 +26,7 @@ SECTIONS
 		*(vtable)
 		*(.data*)
 		_edata = .;
-	} > SRAM
+	} > SRAM1
 
 	.bss :
 	{
@@ -30,6 +34,6 @@ SECTIONS
 		*(.bss*)
 		*(COMMON)
 		_ebss = .;
-	} > SRAM
+	} > SRAM1
 }
 

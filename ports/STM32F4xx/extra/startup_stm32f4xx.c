@@ -26,7 +26,7 @@ void Reset_Handler (void) {
     unsigned long *srcPtr, *dstPtr, *bss;
     
     srcPtr = &_etext;
-    for (dstPtr = &_data; dstPtr < &_edata, *dstPtr++ = *srcPtr++)
+    for (dstPtr = &_data; dstPtr < &_edata; *dstPtr++ = *srcPtr++)
         ;
 
     // Zera o bss (inicializa as variáveis sem inicialização
@@ -63,9 +63,9 @@ void IntDefault_Handler (void) {
 static unsigned long pulStack[128];
 
 // Vetor de interruções
-__atribute__ ((section(".isr_vector")))
-void (*const g_pfnVector[])(void) = {
-
+__attribute__ ((section(".isr_vector")))
+void (* const g_pfnVectors[])(void) =
+{
     (void (*)(void))((unsigned long)pulStack + sizeof(pulStack)),
     Reset_Handler,
     NMI_Handler,
@@ -165,6 +165,6 @@ void (*const g_pfnVector[])(void) = {
     IntDefault_Handler, /* DCMI                         */                   
     IntDefault_Handler, /* CRYP crypto                  */                   
     IntDefault_Handler, /* Hash and Rng                 */
-    IntDefault_Handler, /* FPU                          */
+    IntDefault_Handler /* FPU                          */
 };
 

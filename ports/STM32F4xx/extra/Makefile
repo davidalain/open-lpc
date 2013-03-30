@@ -32,23 +32,16 @@ CFLAGS := -mthumb			\
 		-ffunction-sections	\
 		-fdata-sections		\
 		-MD					\
-		-std=c99            \
 		-Wall               \
-		-pedantic           \
 		-c					\
 		$(INCLUDEDIR)
 
 # Linker flags
 LDFLAGS := --gc-sections
 
-OBJ+=./ports/STM32F4xx/src/digital_io.o \
-    ./ports/STM32F4xx/src/uart.o \
-    ./ports/STM32F4xx/src/i2c_master.o \
-    ./ports/STM32F4xx/src/pwm.o \
-    ./ports/STM32F4xx/src/spi_master.o \
-    ./ports/STM32F4xx/src/timer.o \
-    ./ports/STM32F4xx/extras/startup_stm32f4xx.o \
-    ./ports/STM32F4xx/extras/system_stm32f4xx.o
+OBJ+=./ports/STM32F4xx/extra/startup_stm32f4xx.o \
+    ./ports/STM32F4xx/extra/system_stm32f4xx.o \
+	./main.o
 
 PROJECT := stm32f4xx-example
 
