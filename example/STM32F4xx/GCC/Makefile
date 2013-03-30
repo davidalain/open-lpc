@@ -21,8 +21,8 @@ AFLAGS=-mthumb \
        -MD
 
 # Include path
-INCLUDEDIR+=-I./include \
-        -I./ports/STM32F4xx/inc
+INCLUDEDIR+=-I../../../include \
+        -I../../../ports/STM32F4xx/inc
 
 # GCC C Flags
 CFLAGS := -mthumb			\
@@ -39,25 +39,25 @@ CFLAGS := -mthumb			\
 # Linker flags
 LDFLAGS := --gc-sections
 
-OBJ+=./ports/STM32F4xx/extra/startup_stm32f4xx.o \
-    ./ports/STM32F4xx/extra/system_stm32f4xx.o \
+OBJ+=./startup_stm32f4xx.o \
+    ./system_stm32f4xx.o \
 	./main.o
 
 PROJECT := stm32f4xx-example
 
 all: $(OBJ)
-	@echo "Done building object files"
+	@echo -e "\e[1;32mDone building object files\e[0m"
 	@echo
-	@echo "Linking..."
+	@echo -e "\e[1;33mLinking...\e[0m"
 	${LD} $(LDFLAGS) -T stm32f4xx_linker.ld $(OBJ) -o $(PROJECT).elf
 	@echo "Done. Generating bin file..."
 	${OBJCOPY} -O binary $(PROJECT).elf $(PROJECT).bin
-	@echo "Done"
+	@echo -e "\e[1;32mDone\e[0m"
 
 clean:
-	@echo "Cleaning object files..."
+	@echo -e "\e[1;33mCleaning object files...\e[0m"
 	$(RM) $(OBJ)
 	$(RM) $(shell find . -type f -iname "*.d")
 	$(RM) $(PROJECT).elf $(PROJECT).bin
-	@echo "Done"
+	@echo -e "\e[1;32mDone\e[0m"
 
