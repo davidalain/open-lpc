@@ -12,34 +12,29 @@ void SysTick_Handler(void) {
 
 extern void SystemCoreClockUpdate (void);
 
+void wait_ms (uint32_t ms) {
+	uint32_t quit = ticks + ms;
+
+	while (ticks < quit)
+		;
+}
+
 int main (void) {
 
 	SystemCoreClockUpdate();
+	SysTick_Config (SystemCoreClock / 4000);	// 1ms de SystemTick
+	// TODO: Falta ver como faz para saber que tem que dividir o Clock por 4 (no caso) e depois pelo tempo desejado
 
-	USART_TypeDef *l_usart = USART1;
-	uint32_t pclk2 = SystemCoreClock;
-	uint32_t div, mantissa;
+	RCC->AHB1ENR |= (1 << 3);
 
-	RCC->APB2ENR |= (1 << 4);	// Ativa o clock da USART1
-	l_usart->CR1 |= (1 << 13);	// USART Enable
-	l_usart->CR1 &= ~(1 << 12);	// 8 bits
-	l_usart->CR1 &= ~(1 << 10);	// N
-	l_usart->CR1 |= (0x3 << 2);	// TX e RX ativo
-	l_usart->CR2 &= (~(1 << 13) & ~(1 << 12));	// 1 stop bit
-
-	if (RCC->CFGR & (1 << 29)) {
-		div = 2 + ((RCC->CFGR & (0x03 << 27)) >> 27);
-		pclk2 = SystemCoreClock / div;
-	} else {
-		pclk2 = SystemCoreClock;
-	}
-
-	mantissa = pclk2 / (16 * 115200);
-	l_usart->BRR = (mantissa << 4); // 115200??
-
-	while (1) {
-		while (! (l_usart->SR & (1 << 6)));
-		l_usart->DR = 'A';
+	GPIOD->MODER |= (1 << 26);
+	GPIOD->MODER &= ~(1 << 27);
+	
+	while (1) {	// Faz piscar o LED Laranja :D
+		GPIOD->BSRRH |= (1 << 13);
+		wait_ms (250);
+		GPIOD->BSRRL |= (1 << 13);
+		wait_ms (250);
 	}
 
     return 0;
