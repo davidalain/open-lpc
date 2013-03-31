@@ -5,7 +5,7 @@
 
 MEMORY
 {
-	ROM1 (rx)	    : ORIGIN = 0x08000000, LENGTH = 1024K
+	FLASH (rx)	    : ORIGIN = 0x08000000, LENGTH = 1024K
 	SRAM1 (rwx)	    : ORIGIN = 0x20000000, LENGTH = 128K /* 112K + 16K */
     SRAM_CCM (rwx)  : ORIGIN = 0x10000000, LENGTH = 64K
 }
@@ -16,10 +16,10 @@ SECTIONS
 	{
 		_text = .;
 		KEEP(*(.isr_vector))
-		*(.text) /* Código */
-		*(.rodata) /* Constantes (read-only data = rodata) */
+		*(.text*) /* Código */
+		*(.rodata*) /* Constantes (read-only data = rodata) */
 		_etext = .;
-	} > ROM1
+	} > FLASH
 
 	.data : AT(ADDR(.text) + SIZEOF(.text))
 	{

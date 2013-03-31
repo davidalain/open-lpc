@@ -9,6 +9,7 @@ CROSS_COMPILE=/opt/arm-2012.03/bin/arm-none-eabi-
 CC=$(CROSS_COMPILE)gcc
 LD=$(CROSS_COMPILE)ld
 OBJCOPY=$(CROSS_COMPILE)objcopy
+NM=$(CROSS_COMPILE)nm
 
 # Special variables for Cortex-M4F
 CPU=-mcpu=cortex-m4
@@ -49,7 +50,7 @@ all: $(OBJ)
 	@echo -e "\e[1;32mDone building object files\e[0m"
 	@echo
 	@echo -e "\e[1;33mLinking...\e[0m"
-	${LD} $(LDFLAGS) -T stm32f4xx_linker.ld $(OBJ) -o $(PROJECT).elf
+	${LD} $(LDFLAGS) -T stm32f4xx_linker.ld --entry Reset_Handler $(OBJ) -o $(PROJECT).elf
 	@echo "Done. Generating bin file..."
 	${OBJCOPY} -O binary $(PROJECT).elf $(PROJECT).bin
 	@echo -e "\e[1;32mDone\e[0m"
@@ -60,4 +61,7 @@ clean:
 	$(RM) $(shell find . -type f -iname "*.d")
 	$(RM) $(PROJECT).elf $(PROJECT).bin
 	@echo -e "\e[1;32mDone\e[0m"
+
+elf-info:
+	$(NM) -SC $(PROJECT).elf
 
