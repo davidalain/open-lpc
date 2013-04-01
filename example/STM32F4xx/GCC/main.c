@@ -1,6 +1,9 @@
 #include <stm32f4xx.h>
 #include <stdint.h>
 
+#include <digital_out.h>
+#include <digital_in.h>
+
 static volatile uint32_t ticks;
 
 // SysTick_Handler é a função padrão para o Timer básico do sistema
@@ -25,16 +28,14 @@ int main (void) {
 	SysTick_Config (SystemCoreClock / 4000);	// 1ms de SystemTick
 	// TODO: Falta ver como faz para saber que tem que dividir o Clock por 4 (no caso) e depois pelo tempo desejado
 
-	RCC->AHB1ENR |= (1 << 3);
+	digital_io_t led_laranja;
+	digital_io_t user_sw;
 
-	GPIOD->MODER |= (1 << 26);
-	GPIOD->MODER &= ~(1 << 27);
-	
-	while (1) {	// Faz piscar o LED Laranja :D
-		GPIOD->BSRRH |= (1 << 13);
-		wait_ms (250);
-		GPIOD->BSRRL |= (1 << 13);
-		wait_ms (250);
+	digitalout_setup (&led_laranja, GPIOD, 13);
+	digitalin_setup (&user_sw, GPIOA, 0);
+
+	while (1) {
+		digitalout_write (&led_laranja, digitalin_read (&user_sw));
 	}
 
     return 0;
