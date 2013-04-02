@@ -3,6 +3,7 @@
 
 #include <digital_out.h>
 #include <digital_in.h>
+#include <UART.h>
 
 static volatile uint32_t ticks;
 
@@ -28,14 +29,12 @@ int main (void) {
 	SysTick_Config (SystemCoreClock / 4000);	// 1ms de SystemTick
 	// TODO: Falta ver como faz para saber que tem que dividir o Clock por 4 (no caso) e depois pelo tempo desejado
 
-	digital_io_t led_laranja;
-	digital_io_t user_sw;
+	uart_t uart1;
 
-	digitalout_setup (&led_laranja, GPIOD, 13);
-	digitalin_setup (&user_sw, GPIOA, 0);
+	uart_setup (&uart1, USART1, 115200, 8, PARITY_NONE, 1);	
 
 	while (1) {
-		digitalout_write (&led_laranja, digitalin_read (&user_sw));
+		uart_write (&uart1, (uint8_t *)"A", 1);
 	}
 
     return 0;

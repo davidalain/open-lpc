@@ -2,109 +2,153 @@
  * uart.c
  * Func√µes para objeto UART
  * Author: David Alain do Nascimento
+ * Co-Author: CristÛv„o Zuppardo Rufino <cristovaozr@gmail.com>
  * Version STM32F407xx 0.1
  * Date: 16/02/2013
- * Copyright: Crist√≥v√£o e David
+ * Copyright: CristÛv„o e David
  */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <uart.h>
+#include <UART.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
 
-#define IS_PARITY_VALID(parity)			((parity == PAR_NONE) || (parity == PAR_ODD) || (parity == PAR_EVEN))
-#define IS_STOP_BITS_VALID(stopbits)	((stopbits == 1) || (stopbits == 2))
-
-/* Usado pela API da ST na configuraÁ„o da USART*/
-static USART_InitTypeDef USART_InitStruct;
-
-
 void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits) {
 
-	if(uart == NULL)
-		return;
+	uart->uart = uart_num;
+	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart_num;
 
-	uart->uart = uart_num;  // Necess·rio setar a UART para que as funÁıes
-	// abaixo saibam onde ir para configurar as coisas
+	// Ativar o clock da UART e configuraÁ„o de pinos de IO para USART
+	switch ((uint32_t)uart_num) {
+	case USART1_BASE:
+		RCC->APB2ENR |= (1 << 4);	// Ativa o Clock
 
-	USART_InitStruct.USART_BaudRate = baud;
+		GPIOA->MODER &= ~(1 << 18);	// PA9 - Alternate Function
+		GPIOA->MODER |= (1 << 19);	// PA9 - Alternate Function
+		GPIOA->AFR[1] &= ~(0x0F << 4);	// Configura o PA9 como TX
+		GPIOA->AFR[1] |= (0x07 << 4);
 
-	switch(wordsize){
-	case 8:		USART_InitStruct.USART_WordLength = USART_WordLength_8b;	break;
-	case 9:		USART_InitStruct.USART_WordLength = USART_WordLength_9b;	break;
-	default:	USART_InitStruct.USART_WordLength = USART_WordLength_8b;	break; //evita erros de confuraÁ„o
+		GPIOA->MODER &= ~(1 << 20);	// PA10 - Alternate Function
+		GPIOA->MODER |= (1 << 21);	// PA10 - Alternate Function
+		GPIOA->AFR[1] &= ~(0x0F << 8);	// Configura o PA10 como RX
+		GPIOA->AFR[1] |= (0x07 << 8);
+
+		break;
+	case USART2_BASE:
+		RCC->APB1ENR |= (1 << 17);
+		break;
+	case USART3_BASE:
+		RCC->APB1ENR |= (1 << 18);
+		break;
+	case UART4_BASE:
+		RCC->APB1ENR |= (1 << 19);
+		break;
+	case UART5_BASE:
+		RCC->APB1ENR |= (1 << 20);
+		break;
+	case USART6_BASE:
+		RCC->APB2ENR |= (1 << 5);
+		break;
+	default:
+		return;	// TODO: Chamar um hardfault, talvez?
 	}
 
-	switch(stopbits){
-	case 1:		USART_InitStruct.USART_StopBits = USART_StopBits_1;		break;
-	case 2:		USART_InitStruct.USART_StopBits = USART_StopBits_2;		break;
-	default:	USART_InitStruct.USART_StopBits = USART_StopBits_1;		break; //evita erros de confuraÁ„o
+	// Ativando a USART, o TX e o RX
+	usart_typedef->CR1 |= ((1 << 13) | (1 << 3) | (1 << 2));
+
+	uart_set_baud (uart, baud);
+	uart_set_wordsize (uart, wordsize);
+	uart_set_parity (uart, parity);
+	uart_set_stopbits (uart, stopbits);
+}
+
+static inline uint32_t get_divisor (uint32_t conf_bits) {
+	if (conf_bits & (1 << 2)) {
+		return (1 << ((conf_bits & 0x03) + 1));
+	} else {
+		return 1;
 	}
-
-	switch(parity){
-	case PAR_NONE:	USART_InitStruct.USART_Parity = USART_Parity_No;	break;
-	case PAR_ODD:	USART_InitStruct.USART_Parity = USART_Parity_Odd;	break;
-	case PAR_EVEN:	USART_InitStruct.USART_Parity = USART_Parity_Even;	break;
-	default:		USART_InitStruct.USART_Parity = USART_Parity_No;	break; //evita erros de confuraÁ„o
-	}
-
-	USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None; //N„o usa controle de fluxo, implica funcionar como UART
-
-	USART_Init((uint32_t*)uart_num , &USART_InitStruct);
-
 }
 
 void uart_set_baud (uart_t *uart, uint32_t baud) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
+	uint32_t pclk, mantissa, frac;
 
-	USART_InitStruct.USART_BaudRate = baud;
+	switch ((uint32_t)uart->uart) {
+		case USART1_BASE:
+		case USART6_BASE:
+			pclk = SystemCoreClock / get_divisor ((RCC->CFGR & (0x07 << 13)) >> 13);	// CFGR [15:13] s„o o Prescaler 2
+			break;
 
-	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
+		case USART2_BASE:
+		case USART3_BASE:
+		case UART4_BASE:
+		case UART5_BASE:
+			pclk = SystemCoreClock / get_divisor ((RCC->CFGR & (0x07 << 10)) >> 10);	// CFGR [12:10] s„o o Prescaler 1
+			break;
+
+		default:
+			break;	// TODO: Hardfault?
+	}
+
+	mantissa = pclk / (16 * baud);
+//	frac = pclk % (16 * baud);	// TODO: Verificar c·lculos para parte fracion·ria
+	usart_typedef->BRR = 0;
+	usart_typedef->BRR |= ((mantissa & 0xFFF) << 4);	// TODO: Colocar aqui a parte fracion·ria
 }
 
 void uart_set_wordsize (uart_t *uart, uint32_t wordsize) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-
-	switch(wordsize){
-	case 8:		USART_InitStruct.USART_WordLength = USART_WordLength_8b;	break;
-	case 9:		USART_InitStruct.USART_WordLength = USART_WordLength_9b;	break;
-	default:	USART_InitStruct.USART_WordLength = USART_WordLength_8b;	break; //evita erros de confuraÁ„o
+	switch (wordsize) {
+		case 9:
+			usart_typedef->CR1 |= (1 << 12);
+			break;
+		case 8:
+		default:
+			usart_typedef->CR1 &= ~(1 << 12);
+			break;	// TODO: Considerar chamar um hardfault com wordsize diferente de 9 e 8?
 	}
-
-	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
 }
 
 void uart_set_parity (uart_t *uart, uint32_t parity) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-
-	switch(parity){
-	case PAR_NONE:	USART_InitStruct.USART_Parity = USART_Parity_No;	break;
-	case PAR_ODD:	USART_InitStruct.USART_Parity = USART_Parity_Odd;	break;
-	case PAR_EVEN:	USART_InitStruct.USART_Parity = USART_Parity_Even;	break;
-	default:		USART_InitStruct.USART_Parity = USART_Parity_No;	break; //evita erros de confuraÁ„o
+	switch (parity) {
+		case PARITY_NONE:
+			usart_typedef->CR1 &= ~(1 << 10);
+			break;
+		case PARITY_ODD:
+			usart_typedef->CR1 |= (1 << 10);
+			usart_typedef->CR1 |= (1 << 9);
+			break;
+		case PARITY_EVEN:
+			usart_typedef->CR1 |= (1 << 10);
+			usart_typedef->CR1 &= ~(1 << 9);
+			break;
+		default:
+			break;	// TODO: Hardfault?
 	}
-
-	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
 }
 
 void uart_set_stopbits (uart_t *uart, uint32_t stopbits) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-
-	switch(stopbits){
-	case 1:		USART_InitStruct.USART_StopBits = USART_StopBits_1;		break;
-	case 2:		USART_InitStruct.USART_StopBits = USART_StopBits_2;		break;
-	default:	USART_InitStruct.USART_StopBits = USART_StopBits_1;		break; //evita erros de confuraÁ„o
+	switch (stopbits) {
+		case 1:
+			usart_typedef->CR2 &= (~(1 << 13) & ~(1 << 12));
+			break;
+		case 2:
+			usart_typedef->CR2 |= (1 << 13);
+			usart_typedef->CR2 &= ~(1 << 12);
+			break;
+		default:
+			break;	// TODO: Hardfault?
 	}
-
-	USART_Init((uint32_t*)usart_typedef , &USART_InitStruct);
 }
 
 uint32_t uart_write (const uart_t *uart, const uint8_t *data, uint32_t length) {
@@ -112,10 +156,10 @@ uint32_t uart_write (const uart_t *uart, const uint8_t *data, uint32_t length) {
 	uint32_t i;
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 
-    for(i = 0 ; i < length ; i++){
-        while(USART_GetFlagStatus(usart_typedef, USART_FLAG_TXE) == RESET);
-        USART_SendData(usart_typedef, data[i]);
-    }
+	for (i = 0; i < length; i++) {
+		while (usart_typedef->SR & (1 << 6)) ; // Espera terminar de enviar
+		usart_typedef->DR = data[i];
+	}
 
 	return i;
 }
@@ -124,14 +168,12 @@ uint32_t uart_read (const uart_t *uart, uint8_t *data, uint32_t length) {
 
 	uint32_t i;
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-
-	for(i = 0 ; i < length ; i++){
-
-		if(USART_GetITStatus( usart_typedef, USART_IT_RXNE ) == SET){
-			data[i] = USART_ReceiveData( usart_typedef );
-		}else{
+	for (i = 0; i < length; i++) {
+		if (usart_typedef->SR & (1 << 5))
+			data[i] = usart_typedef->DR;
+		else
 			break;
-		}
+		
 	}
 
 	return i;
@@ -139,9 +181,10 @@ uint32_t uart_read (const uart_t *uart, uint8_t *data, uint32_t length) {
 
 uint32_t uart_data_available (const uart_t *uart) {
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-	return (USART_GetITStatus( usart_typedef, USART_IT_RXNE ) == SET);
+	return (usart_typedef->SR & (1 << 5));
 }
 
 #ifdef __cplusplus
 }
 #endif
+
