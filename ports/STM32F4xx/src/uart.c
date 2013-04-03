@@ -15,6 +15,7 @@ extern "C" {
 #include <UART.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
+#include <misc.h>
 
 void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits) {
 
@@ -26,15 +27,15 @@ void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize,
 	case USART1_BASE:
 		RCC->APB2ENR |= (1 << 4);	// Ativa o Clock
 
-		GPIOA->MODER &= ~(1 << 18);	// PA9 - Alternate Function
-		GPIOA->MODER |= (1 << 19);	// PA9 - Alternate Function
-		GPIOA->AFR[1] &= ~(0x0F << 4);	// Configura o PA9 como TX
-		GPIOA->AFR[1] |= (0x07 << 4);
+		GPIOB->MODER &= ~(1 << 12);	// PB6 - Alternate Function
+		GPIOB->MODER |= (1 << 13);	// PB6 - Alternate Function
+		GPIOB->AFR[0] &= ~(0x0F << 24);	// Configura o PB6 como TX
+		GPIOB->AFR[0] |= (0x07 << 24);
 
-		GPIOA->MODER &= ~(1 << 20);	// PA10 - Alternate Function
-		GPIOA->MODER |= (1 << 21);	// PA10 - Alternate Function
-		GPIOA->AFR[1] &= ~(0x0F << 8);	// Configura o PA10 como RX
-		GPIOA->AFR[1] |= (0x07 << 8);
+		GPIOB->MODER &= ~(1 << 14);	// PB7 - Alternate Function
+		GPIOB->MODER |= (1 << 15);	// PB7 - Alternate Function
+		GPIOB->AFR[0] &= ~(0x0F << 28);	// Configura o PB7 como RX
+		GPIOB->AFR[0] |= (0x07 << 28);
 
 		break;
 	case USART2_BASE:
@@ -76,19 +77,19 @@ static inline uint32_t get_divisor (uint32_t conf_bits) {
 void uart_set_baud (uart_t *uart, uint32_t baud) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-	uint32_t pclk, mantissa, frac;
+	uint32_t pclk = 0, mantissa, frac;
 
 	switch ((uint32_t)uart->uart) {
 		case USART1_BASE:
 		case USART6_BASE:
-			pclk = SystemCoreClock / get_divisor ((RCC->CFGR & (0x07 << 13)) >> 13);	// CFGR [15:13] são o Prescaler 2
+			pclk = get_clock() / get_divisor ((RCC->CFGR & (0x07 << 13)) >> 13);	// CFGR [15:13] são o Prescaler 2
 			break;
 
 		case USART2_BASE:
 		case USART3_BASE:
 		case UART4_BASE:
 		case UART5_BASE:
-			pclk = SystemCoreClock / get_divisor ((RCC->CFGR & (0x07 << 10)) >> 10);	// CFGR [12:10] são o Prescaler 1
+			pclk = get_clock() / get_divisor ((RCC->CFGR & (0x07 << 10)) >> 10);	// CFGR [12:10] são o Prescaler 1
 			break;
 
 		default:
@@ -97,8 +98,7 @@ void uart_set_baud (uart_t *uart, uint32_t baud) {
 
 	mantissa = pclk / (16 * baud);
 //	frac = pclk % (16 * baud);	// TODO: Verificar cálculos para parte fracionária
-	usart_typedef->BRR = 0;
-	usart_typedef->BRR |= ((mantissa & 0xFFF) << 4);	// TODO: Colocar aqui a parte fracionária
+	usart_typedef->BRR = ((mantissa & 0xFFF) << 4);	// TODO: Colocar aqui a parte fracionária
 }
 
 void uart_set_wordsize (uart_t *uart, uint32_t wordsize) {

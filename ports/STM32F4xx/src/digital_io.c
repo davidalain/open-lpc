@@ -70,9 +70,9 @@ void digitalout_write (const digital_io_t *pin, uint32_t value) {
 	GPIO_TypeDef *p_gpio = (GPIO_TypeDef *)pin->port;
 
 	if (value)
-		p_gpio->BSRRH |= (1 << pin->pinnum);
-	else
 		p_gpio->BSRRL |= (1 << pin->pinnum);
+	else
+		p_gpio->BSRRH |= (1 << pin->pinnum);
 }
 
 uint32_t digitalout_read (const digital_io_t *pin) {
