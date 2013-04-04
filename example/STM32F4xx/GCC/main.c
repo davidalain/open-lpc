@@ -30,9 +30,9 @@ int main (void) {
 	// TODO: Falta ver como faz para saber que tem que dividir o Clock por 4 (no caso) e depois pelo tempo desejado
 
 	uart_t uart1;
-	uint8_t a = 'A';
+	uint8_t a = 0xAA;
 	digital_io_t pb8;
-	uart_setup (&uart1, USART1, 115200, 8, PARITY_NONE, 1);	
+	uart_setup (&uart1, USART1, 9600, 8, PARITY_NONE, 1);	
 	digitalout_setup (&pb8, GPIOB, 8);
 
 	digitalout_write (&pb8, 1);

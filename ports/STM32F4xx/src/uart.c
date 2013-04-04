@@ -25,7 +25,8 @@ void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize,
 	// Ativar o clock da UART e configuração de pinos de IO para USART
 	switch ((uint32_t)uart_num) {
 	case USART1_BASE:
-		RCC->APB2ENR |= (1 << 4);	// Ativa o Clock
+		RCC->APB2ENR |= (1 << 4);	// Ativa o Clock da UART
+		RCC->AHB1ENR |= (1 << 1);	// Ativa o Clock do GPIO
 
 		GPIOB->MODER &= ~(1 << 12);	// PB6 - Alternate Function
 		GPIOB->MODER |= (1 << 13);	// PB6 - Alternate Function
@@ -77,7 +78,7 @@ static inline uint32_t get_divisor (uint32_t conf_bits) {
 void uart_set_baud (uart_t *uart, uint32_t baud) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-	uint32_t pclk = 0, mantissa, frac;
+	uint32_t pclk = 0, mantissa, frac, tmpreg;
 
 	switch ((uint32_t)uart->uart) {
 		case USART1_BASE:
@@ -96,9 +97,12 @@ void uart_set_baud (uart_t *uart, uint32_t baud) {
 			break;	// TODO: Hardfault?
 	}
 
-	mantissa = pclk / (16 * baud);
-//	frac = pclk % (16 * baud);	// TODO: Verificar cálculos para parte fracionária
-	usart_typedef->BRR = ((mantissa & 0xFFF) << 4);	// TODO: Colocar aqui a parte fracionária
+	mantissa = (25 * pclk) / (4 * baud);
+	tmpreg = (mantissa / 100) << 4;
+	frac = mantissa - (100 * (tmpreg >> 4));
+	tmpreg |= ((((frac * 16) + 50) /100) & 0x0F);
+//	usart_typedef->BRR = ((mantissa & 0xFFF) << 4);	// TODO: Colocar aqui a parte fracionária
+	usart_typedef->BRR = (uint16_t)tmpreg;
 }
 
 void uart_set_wordsize (uart_t *uart, uint32_t wordsize) {
@@ -157,7 +161,7 @@ uint32_t uart_write (const uart_t *uart, const uint8_t *data, uint32_t length) {
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 
 	for (i = 0; i < length; i++) {
-		while (usart_typedef->SR & (1 << 6)) ; // Espera terminar de enviar
+		while ((usart_typedef->SR & (1 << 6)) == 0) ; // Espera terminar de enviar
 		usart_typedef->DR = data[i];
 	}
 
@@ -170,7 +174,7 @@ uint32_t uart_read (const uart_t *uart, uint8_t *data, uint32_t length) {
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
 	for (i = 0; i < length; i++) {
 		if (usart_typedef->SR & (1 << 5))
-			data[i] = usart_typedef->DR;
+			data[i] = (usart_typedef->DR & 0xFF);	// Ignorar o bit de paridade
 		else
 			break;
 		
