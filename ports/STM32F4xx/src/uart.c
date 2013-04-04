@@ -17,6 +17,8 @@ extern "C" {
 #include <system_stm32f4xx.h>
 #include <misc.h>
 
+static const uint32_t APBAHBPrescTable[16] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 8, 9};
+
 void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize, uint32_t parity, uint32_t stopbits) {
 
 	uart->uart = uart_num;
@@ -67,43 +69,32 @@ void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize,
 	uart_set_stopbits (uart, stopbits);
 }
 
-static inline uint32_t get_divisor (uint32_t conf_bits) {
-	if (conf_bits & (1 << 2)) {
-		return (1 << ((conf_bits & 0x03) + 1));
-	} else {
-		return 1;
-	}
-}
-
 void uart_set_baud (uart_t *uart, uint32_t baud) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-	uint32_t pclk = 0, mantissa, frac, tmpreg;
+	uint32_t pclk = 0, mantissa, frac;
 
 	switch ((uint32_t)uart->uart) {
 		case USART1_BASE:
 		case USART6_BASE:
-			pclk = get_clock() / get_divisor ((RCC->CFGR & (0x07 << 13)) >> 13);	// CFGR [15:13] são o Prescaler 2
+			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 13)) >> 13];	// CFGR [15:13] são o Prescaler 2
 			break;
 
 		case USART2_BASE:
 		case USART3_BASE:
 		case UART4_BASE:
 		case UART5_BASE:
-			pclk = get_clock() / get_divisor ((RCC->CFGR & (0x07 << 10)) >> 10);	// CFGR [12:10] são o Prescaler 1
+			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 10)) >> 10];	// CFGR [12:10] são o Prescaler 1
 			break;
 
 		default:
 			break;	// TODO: Hardfault?
 	}
 
-	mantissa = (25 * pclk) / (4 * baud);
-	tmpreg = (mantissa / 100) << 4;
-	frac = mantissa - (100 * (tmpreg >> 4));
-	tmpreg |= ((((frac * 16) + 50) /100) & 0x0F);
-//	usart_typedef->BRR = ((mantissa & 0xFFF) << 4);	// TODO: Colocar aqui a parte fracionária
-	usart_typedef->BRR = (uint16_t)tmpreg;
+	mantissa = pclk / (16 * baud);
+	usart_typedef->BRR = ((mantissa & 0xFFF) << 4);	// TODO: Colocar aqui a parte fracionária
 }
+
 
 void uart_set_wordsize (uart_t *uart, uint32_t wordsize) {
 
