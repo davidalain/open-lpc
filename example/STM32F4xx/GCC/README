@@ -1,0 +1,36 @@
+Sobre o exemplo
+=============== 
+
+Este é um arquivo de exemplo, que utiliza GPIO's e USART para exibir coisas pela
+serial e haver led's piscando. Este exemplo, devidamente modificado, pode ser
+utilizad como base para ﬁrmwares bem mais complexos.
+
+Algumas coisas devem ser levadas em consideração, no entanto:
+
+    1. Este exemplo foi desenvolvido para a placa Discovery STM32F407 que utiliza
+       um microcontrolador da família STM32M4xx.
+
+    2. Este kit da ST possui um oscilador externo (HSE Oscilator) diferente do que
+       o oscilador previsto no na configuração padrão do arquivo system_stm32f4xx.c
+       que se encontra na pasta de exemplo. Este arquivo pode (e deve) ser utilizado
+       como base para reconfigurar o clock e outras coisas do HW básico do microcontrolador.
+
+    3. As configurações atuais deste exemplo são:
+       HSE Oscilator = 8MHz (Clock de entrada(F_input_clk))
+       PLLM = 4 (Divisor do Clock de entrada)
+       PLLN = 84 (Multiplicador do Clock de entrada; o clock de saída F_vco = (F_input_clk * PLLN) / PLLM)
+       PLLP = 2 (Divisor do clock F_vco que vai para o clock do sistema)
+       PLLQ = 4 (Divisor do clock para SDIO, RNG etc)
+
+       Realizando as contas, verifica-se facilmente que o clock de operação é 168MHz, 
+       e o clock dos dispositivos fica em 84MHz. Também é importante ressaltar que
+       devido a esta configuração não é possível utilizar a USB OTG FS pois necessita
+       um clock de 48MHz o que não é possível com a configuração atual. Isto pode ser
+       facilmente corrigido modificando os valores dos PLL's segundo o manual do
+       microcontrolador.
+
+     4. Há um #define dentro do arquivo system_stm32f4xx.c que define o clock do HSE OSC
+        como 25MHz. Pode-se realziar a mudança dentro deste arquivo, mas preferiu-se
+        deixar modificado no Makefile (por recomendação do próprio arquivo system_stm32f4xx.c)
+        utilizando a diretiva de pré-compilação -DHSE_VALUE=8000000.
+
