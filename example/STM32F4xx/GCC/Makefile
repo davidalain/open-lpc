@@ -27,15 +27,15 @@ INCLUDEDIR+=-I../../../include \
 
 # GCC C Flags
 CFLAGS := -mthumb			\
-		$(CPU)				\
-		$(FPU)				\
-		-Os					\
+		$(CPU)			\
+		$(FPU)			\
+		-Os			\
 		-ffunction-sections	\
 		-fdata-sections		\
-		-MD					\
-		-Wall               \
-		-c					\
-		-DHSE_VALUE=8000000 \
+		-MD			\
+		-Wall   		\
+		-c			\
+		-DHSE_VALUE=8000000	\
 		$(INCLUDEDIR)
 
 # Linker flags
@@ -43,7 +43,6 @@ LDFLAGS := --gc-sections
 
 OBJ+=./startup_stm32f4xx.o \
     ./system_stm32f4xx.o \
-	../../../ports/STM32F4xx/src/misc.o \
 	../../../ports/STM32F4xx/src/digital_io.o \
 	../../../ports/STM32F4xx/src/uart.o \
 	./main.o

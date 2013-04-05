@@ -27,18 +27,18 @@ int main (void) {
 
 	digital_io_t led_laranja;
 	uart_t uart1;
-	uint8_t a = 0xAA;
+	uint8_t a = 'C';
 
 	digitalout_setup (&led_laranja, GPIOD, 13);
-	uart_setup (&uart1, USART1, 9600, 8, PARITY_NONE, 1);
+	uart_setup (&uart1, USART1, 115200, 8, PARITY_NONE, 1);
 
 	while (1) {
 		digitalout_write (&led_laranja, 1);
-		wait_ms (50);
 		uart_write (&uart1, &a, 1);
+		wait_ms (50);
 		digitalout_write (&led_laranja, 0);
-		wait_ms (50);
 		uart_write (&uart1, &a, 1);
+		wait_ms (50);
 	}
 
     return 0;
