@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 /*!
- * \file SPI.h
+ * \file spi_master.h
  * Tipo para interface SPI Master
  * \details Contém funções para configurar e utilizar uma porta SPI Master
  * \author Cristóvão Zuppardo Rufino
@@ -24,7 +24,7 @@ extern "C" {
  */
 
 /*!
- * \fn void spi_setup (spi_t *spi, uint32_t spi_num, uint32_t spi_freq)
+ * \fn void spi_setup (spi_t *spi, void *spi_num, uint32_t spi_freq)
  * \brief Configura uma porta SPI
  * \param spi Ponteiro para estrutura spi_t
  * \param spi_num Número da porta a ser utilizada
@@ -38,10 +38,10 @@ void spi_setup (spi_t *spi, void *spi_num, uint32_t spi_freq);
  * \param spi Ponteiro para estrutura spi_t
  * \param freq Novo valor da frequencia em Hz
  */
-void spi_set_frequency (const spi_t *spi, uint32_t freq);
+void spi_set_frequency (spi_t *spi, uint32_t freq);
 
 /*!
- * \fn uint32_t spi_write (const spi_t *spi, const uint8_t *data, uint8_t *recv, uint32_t length)
+ * \fn uint32_t spi_write (const spi_t *spi, const uint8_t *data, uint32_t length)
  * \brief Escreve vários bytes pela porta SPI
  * \param spi Ponteiro para estrutura spi_t
  * \param data Ponteiro para array de bytes de saída
