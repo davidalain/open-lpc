@@ -14,8 +14,6 @@ void SysTick_Handler(void) {
     ticks++;
 }
 
-extern void SystemCoreClockUpdate (void);
-
 void wait_ms (uint32_t ms) {
 	uint32_t quit = ticks + ms;
 
@@ -25,19 +23,21 @@ void wait_ms (uint32_t ms) {
 
 int main (void) {
 
-	SystemCoreClockUpdate();
-	SysTick_Config (SystemCoreClock / 4000);	// 1ms de SystemTick
-	// TODO: Falta ver como faz para saber que tem que dividir o Clock por 4 (no caso) e depois pelo tempo desejado
+	SysTick_Config (SystemCoreClock / 1000);	// 1ms de SystemTick
 
+	digital_io_t led_laranja;
 	uart_t uart1;
 	uint8_t a = 0xAA;
-	digital_io_t pb8;
-	uart_setup (&uart1, USART1, 9600, 8, PARITY_NONE, 1);	
-	digitalout_setup (&pb8, GPIOB, 8);
 
-	digitalout_write (&pb8, 1);
+	digitalout_setup (&led_laranja, GPIOD, 13);
+	uart_setup (&uart1, USART1, 9600, 8, PARITY_NONE, 1);
 
 	while (1) {
+		digitalout_write (&led_laranja, 1);
+		wait_ms (50);
+		uart_write (&uart1, &a, 1);
+		digitalout_write (&led_laranja, 0);
+		wait_ms (50);
 		uart_write (&uart1, &a, 1);
 	}
 

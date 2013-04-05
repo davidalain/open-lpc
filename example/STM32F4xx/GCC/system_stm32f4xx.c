@@ -146,8 +146,8 @@
 
 /************************* PLL Parameters *************************************/
 /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
-#define PLL_M      25
-#define PLL_N      336
+#define PLL_M      16	// OBS: Valor anterior: 25 (mudança por Cristóvão Zuppardo Rufino)
+#define PLL_N      192	// OBS: Valor anterior: 336 (mudança por Cristóvão Zuppardo Rufino)
 
 /* SYSCLK = PLL_VCO / PLL_P */
 #define PLL_P      2
@@ -309,7 +309,8 @@ void SystemCoreClockUpdate(void)
       if (pllsource != 0)
       {
         /* HSE used as PLL clock source */
-        pllvco = (HSE_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);
+//        pllvco = (HSE_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);
+		pllvco = (HSE_VALUE * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6)) / pllm;
       }
       else
       {

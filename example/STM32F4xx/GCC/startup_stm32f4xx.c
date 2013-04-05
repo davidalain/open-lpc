@@ -20,6 +20,7 @@ extern unsigned long  _ebss;
 extern void SystemInit (void);
 extern void SysTick_Handler (void);
 extern int main (void);
+extern void SystemCoreClockUpdate (void);
 
 void Reset_Handler (void) {
 
@@ -35,6 +36,7 @@ void Reset_Handler (void) {
 
     // Inicia o hardware do sistema
     SystemInit();
+	SystemCoreClockUpdate();
 
     // Branch para o main()
     main();
