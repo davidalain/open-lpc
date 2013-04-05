@@ -146,14 +146,14 @@
 
 /************************* PLL Parameters *************************************/
 /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
-#define PLL_M      16	// OBS: Valor anterior: 25 (mudança por Cristóvão Zuppardo Rufino)
-#define PLL_N      192	// OBS: Valor anterior: 336 (mudança por Cristóvão Zuppardo Rufino)
+#define PLL_M      4	// OBS: Valor anterior: 25 (mudança por Cristóvão Zuppardo Rufino)
+#define PLL_N      84	// OBS: Valor anterior: 336 (mudança por Cristóvão Zuppardo Rufino)
 
-/* SYSCLK = PLL_VCO / PLL_P */
+/* SYSCLK = PLL_VCO / PLL_P */	// OBS: Isto dará um SYSCLK de 84MHz para os periféricos
 #define PLL_P      2
 
 /* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
-#define PLL_Q      7
+#define PLL_Q      4	// OSB: Não será possível utilizar USB OTG FS pois o clock aqui dará 42MHz
 
 /******************************************************************************/
 
