@@ -150,7 +150,7 @@ void uart_setup (uart_t *uart, void* uart_num, uint32_t baud, uint32_t wordsize,
 void uart_set_baud (uart_t *uart, uint32_t baud) {
 
 	USART_TypeDef *usart_typedef = (USART_TypeDef *)uart->uart;
-	uint32_t pclk = 0, mantissa, frac;
+	uint32_t pclk = 0, mantissa;
 
 	switch ((uint32_t)uart->uart) {
 		case USART1_BASE:
