@@ -10,9 +10,14 @@
 extern "C" {
 #endif
 
-#include <stm32f4xx.h>
+#include <stdint.h>
 
-uint32_t get_clock(void);
+typedef enum {
+	APB1 = 0,
+	APB2
+} APBAHBSource;
+
+uint32_t get_fpclk(APBAHBSource source);
 
 #ifdef __cplusplus
 }

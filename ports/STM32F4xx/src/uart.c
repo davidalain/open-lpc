@@ -15,8 +15,7 @@ extern "C" {
 #include <UART.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
-
-static const uint32_t APBAHBPrescTable[16] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 8, 9};
+#include <misc.h>
 
 static void enable_uart1 (void) {
     RCC->AHB1ENR |= (1 << 1);	// Ativa o Clock do GPIO
@@ -155,14 +154,16 @@ void uart_set_baud (uart_t *uart, uint32_t baud) {
 	switch ((uint32_t)uart->uart) {
 		case USART1_BASE:
 		case USART6_BASE:
-			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 13)) >> 13];	// CFGR [15:13] são o Prescaler 2
+//			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 13)) >> 13];	// CFGR [15:13] são o Prescaler 2
+			pclk = get_fpclk (APB2);
 			break;
 
 		case USART2_BASE:
 		case USART3_BASE:
 		case UART4_BASE:
 		case UART5_BASE:
-			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 10)) >> 10];	// CFGR [12:10] são o Prescaler 1
+//			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 10)) >> 10];	// CFGR [12:10] são o Prescaler 1
+			pclk = get_fpclk (APB1);
 			break;
 
 		default:

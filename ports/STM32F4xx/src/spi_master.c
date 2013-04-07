@@ -15,6 +15,7 @@ extern "C" {
 #include <spi_master.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
+#include <misc.h>
 
 static void enable_spi1 (void) {
 	RCC->AHB1ENR |= (1 << 1);	// Ativa o clock do GPIO
@@ -88,10 +89,26 @@ void spi_setup (spi_t *spi, void *spi_num, uint32_t spi_freq) {
 static uint32_t SPI_Baudrate_Divisor[] = {2, 4, 8, 16, 32, 64, 128, 256};
 
 void spi_set_frequency (spi_t *spi, uint32_t freq) {
-    uint32_t realfreq, i;
+    uint32_t realfreq, i, pclk = 0;
 	SPI_TypeDef *spi_typedef = (SPI_TypeDef *)spi->spi;
 
-    realfreq = SystemCoreClock / freq;
+	switch ((uint32_t)spi->spi) {
+		case SPI1_BASE:
+//			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 13)) >> 13];	// CFGR [15:13] são o Prescaler 2
+			pclk = get_fpclk (APB2);
+			break;
+
+		case SPI2_BASE:
+		case SPI3_BASE:
+//			pclk = SystemCoreClock >> APBAHBPrescTable[(RCC->CFGR & (0x07 << 10)) >> 10];	// CFGR [12:10] são o Prescaler 1
+			pclk = get_fpclk (APB1);
+			break;
+
+		default:
+			break;	// TODO: Hardfault?
+	}
+
+    realfreq = pclk / freq;
     for (i = 31; i >=0; i--) 
 		if (realfreq & (1 << i)) break;
 

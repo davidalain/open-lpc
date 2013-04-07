@@ -43,6 +43,7 @@ LDFLAGS := --gc-sections
 
 OBJ+=./startup_stm32f4xx.o \
     ./system_stm32f4xx.o \
+	../../../ports/STM32F4xx/src/misc.o \
 	../../../ports/STM32F4xx/src/digital_io.o \
 	../../../ports/STM32F4xx/src/uart.o \
 	../../../ports/STM32F4xx/src/spi_master.o \
