@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#include <UART.h>
+#include <uart.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
 #include <misc.h>

@@ -1,9 +1,7 @@
 #include <stm32f4xx.h>
 #include <stdint.h>
 
-#include <digital_out.h>
-#include <digital_in.h>
-#include <UART.h>
+#include <open_lpc.h>
 
 static volatile uint32_t ticks;
 
