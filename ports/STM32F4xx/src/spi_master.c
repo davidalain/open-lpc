@@ -23,8 +23,8 @@ static void enable_spi1 (void) {
 	GPIOB->MODER &= (~(0x03 << 6) & ~(0x03 << 8) & ~(0x03 << 10));
 	GPIOB->MODER |= ((0x02 << 6) | (0x02 << 8) | (0x02 << 10));		// Configura PB3, PB4 e PB5 como função alternativa
 
-	GPIOB->OSPEEDR &= (~(0x03 << 6) & ~(0x03 << 8) & ~(0x03 << 10));
-	GPIOB->OSPEEDR |= ((0x02 << 6) | (0x02 << 8) | (0x02 << 10));	// Configura PB3, PB4 e PB5 como 50MHz fast speed
+//	GPIOB->OSPEEDR &= (~(0x03 << 6) & ~(0x03 << 8) & ~(0x03 << 10));
+//	GPIOB->OSPEEDR |= ((0x02 << 6) | (0x02 << 8) | (0x02 << 10));	// Configura PB3, PB4 e PB5 como 50MHz fast speed
 
 	GPIOB->AFR[0] &= ~(0xFFF << 12);
 	GPIOB->AFR[0] |= (0x555 << 12);		// Configura PB3, PB4 e PB5 como SCK, MISO e MOSI respectivamente 
@@ -36,8 +36,8 @@ static void enable_spi2 (void) {
 	GPIOB->MODER &= (~(0x03 << 26) & ~(0x03 << 28) & ~(0x03 << 30));
 	GPIOB->MODER |= ((0x02 << 26) | (0x02 << 28) | (0x02 << 30));		// Configura PB13, PB14 e PB15 como função alternativa
 
-	GPIOB->OSPEEDR &= (~(0x03 << 26) & ~(0x03 << 28) & ~(0x03 << 30));
-	GPIOB->OSPEEDR |= ((0x02 << 26) | (0x02 << 28) | (0x02 << 30));	// Configura PB13, PB14 e PB15 como 50MHz fast speed
+//	GPIOB->OSPEEDR &= (~(0x03 << 26) & ~(0x03 << 28) & ~(0x03 << 30));
+//	GPIOB->OSPEEDR |= ((0x02 << 26) | (0x02 << 28) | (0x02 << 30));	// Configura PB13, PB14 e PB15 como 50MHz fast speed
 
 	GPIOB->AFR[1] &= ~(0xFFF << 20);
 	GPIOB->AFR[1] |= (0x555 << 20);		// Configura PB13, PB14 e PB15 como SCK, MISO e MOSI respectivamente
@@ -49,8 +49,8 @@ static void enable_spi3 (void) {
 	GPIOC->MODER &= (~(0x03 << 20) & ~(0x03 << 22) & ~(0x03 << 24));
 	GPIOC->MODER |= ((0x02 << 20) | (0x02 << 22) | (0x02 << 24));		// Configura PC10, PC11 e PC12 como função alternativa
 
-	GPIOC->OSPEEDR &= (~(0x03 << 20) & ~(0x03 << 22) & ~(0x03 << 24));
-	GPIOC->OSPEEDR |= ((0x02 << 20) | (0x02 << 22) | (0x02 << 24));	// Configura PC10, PC11 e PC12 como 50MHz fast speed
+//	GPIOC->OSPEEDR &= (~(0x03 << 20) & ~(0x03 << 22) & ~(0x03 << 24));
+//	GPIOC->OSPEEDR |= ((0x02 << 20) | (0x02 << 22) | (0x02 << 24));	// Configura PC10, PC11 e PC12 como 50MHz fast speed
 
 	GPIOC->AFR[1] &= ~(0xFFF << 8);
 	GPIOC->AFR[1] |= (0x666 << 8);		// Configura PC10, PC11 e PC12 como SCK, MISO e MOSI respectivamente
@@ -113,6 +113,7 @@ void spi_set_frequency (spi_t *spi, uint32_t freq) {
 	if (i == sizeof(SPI_Baudrate_Divisor))
 		i--;
 
+	spi->freq = pclk >> SPI_Baudrate_Divisor[i];
 	spi_typedef->CR1 &= ~(0x07 << 3);
 	spi_typedef->CR1 |= (i << 3);
 }

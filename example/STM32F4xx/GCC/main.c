@@ -18,13 +18,14 @@ void wait_ms (uint32_t ms) {
 	while (ticks < quit)
 		;
 }
-#if 0
+
+uart_t dbg;
 digital_io_t rst;
 digital_io_t dc;
 digital_io_t sce;
 spi_t display;
 
-#define LCD_COMMAND 0 
+#define LCD_COMMAND 0
 #define LCD_DATA  1
 
 //You may find a different size screen, but this one is 84 by 48 pixels
@@ -322,7 +323,7 @@ void LCDInit(void) {
 	digitalout_write(&rst, 0);
 	digitalout_write(&rst, 1);
 
-//uart_write (&dbg, "Reset\r\n", 7);
+uart_write (&dbg, "Reset\r\n", 7);
 	LCDWrite(LCD_COMMAND, 0x21); //Tell LCD that extended commands follow
 	LCDWrite(LCD_COMMAND, 0xB0); //Set LCD Vop (Contrast): Try 0xB1(good @ 3.3V) or 0xBF if your display is too dark
 	LCDWrite(LCD_COMMAND, 0x04); //Set Temp coefficent
@@ -337,7 +338,7 @@ void LCDInit(void) {
 //function sets the DC pin high or low depending, and then sends
 //the data byte
 void LCDWrite(int data_or_command, uint8_t data) {
-	//digitalWrite(PIN_DC, data_or_command); //Tell the LCD that we are writing either to data or a command
+
 	digitalout_write (&dc, data_or_command);
 
 	//Send the data
@@ -348,12 +349,8 @@ void LCDWrite(int data_or_command, uint8_t data) {
 
 int main (void) {
 	/* set system tick for 1ms interrupt */
-	if (SysTick_Config(SystemCoreClock / 1000)) {
-		while (1);
-	}
 
 	digital_io_t mypin;
-
 	digitalout_setup (&sce, GPIOE, 0);
 	digitalout_setup (&rst, GPIOE, 2);
 	digitalout_setup (&dc, GPIOE, 4);
@@ -364,9 +361,13 @@ int main (void) {
 	
 	digitalout_setup (&mypin, GPIOD, 13);
 	spi_setup (&display, SPI1, 1000000);
+	uart_setup (&dbg, USART2, 115200, 8, PARITY_NONE, 1);
 
+	uart_write (&dbg, &display.freq, 4);
+
+	digitalout_write (&mypin, 1);
 	setup();
-
+	digitalout_write (&mypin, 0);
 	loop();
 
 	while (1) {
@@ -378,9 +379,8 @@ int main (void) {
 
 	return 0;
 }
-#endif
 
-
+#if 0
 int main (void) {
 
 	SysTick_Config (SystemCoreClock / 1000);	// 1ms de SystemTick
@@ -403,4 +403,5 @@ int main (void) {
 
     return 0;
 }
+#endif
 
