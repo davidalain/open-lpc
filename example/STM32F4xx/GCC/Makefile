@@ -23,7 +23,8 @@ AFLAGS=-mthumb \
 
 # Include path
 INCLUDEDIR+=-I../../../include \
-        -I../../../ports/STM32F4xx/inc
+        -I../../../ports/STM32F4xx/inc \
+		-I./stdlib
 
 # GCC C Flags
 CFLAGS := -mthumb			\
@@ -47,7 +48,8 @@ OBJ+=./startup_stm32f4xx.o \
 	../../../ports/STM32F4xx/src/digital_io.o \
 	../../../ports/STM32F4xx/src/uart.o \
 	../../../ports/STM32F4xx/src/spi_master.o \
-	./main.o
+	./main.o \
+	./stdlib/serial_io.o
 
 PROJECT := stm32f4xx-example
 

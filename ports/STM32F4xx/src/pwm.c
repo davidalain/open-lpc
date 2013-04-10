@@ -30,5 +30,5 @@ void pwm_write_float (const pwm_t *pwm, float duty) {
 
 float pwm_read_float (const pwm_t *pwm) {
 
-	return 0;
+	return 0.0f;
 }
