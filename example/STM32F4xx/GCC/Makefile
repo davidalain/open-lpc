@@ -37,6 +37,7 @@ CFLAGS := -mthumb			\
 		-Wall   		\
 		-c			\
 		-DHSE_VALUE=8000000	\
+		-ggdb 			\
 		$(INCLUDEDIR)
 
 # Linker flags

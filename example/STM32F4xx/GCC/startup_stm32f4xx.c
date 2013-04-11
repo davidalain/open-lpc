@@ -70,6 +70,23 @@ void IntDefault_Handler (void) {
         ;
 }
 
+void MemManage_Handler (void) {
+
+	digitalout_setup (&panic_led, GPIOD, 15);
+	digitalout_write (&panic_led, 1);
+
+	while (1)
+		;
+}
+
+void BusFault_Handler (void) {
+	digitalout_setup (&panic_led, GPIOD, 12);
+	digitalout_write (&panic_led, 1);
+
+	while (1)
+		;
+}
+
 // Espaço reservado para a stack do microcontrolador
 #define STACK_SIZE 128
 
@@ -83,8 +100,8 @@ void (* const g_pfnVectors[])(void) =
     Reset_Handler,
     NMI_Handler,
     HardFault_Handler,
-    IntDefault_Handler,				// MemManage_Handler
-	IntDefault_Handler,				// BusFault_Handler
+    MemManage_Handler,				// MemManage_Handler
+	BusFault_Handler,				// BusFault_Handler
     IntDefault_Handler,				// UsageFault_Handler
     0,
     0,
