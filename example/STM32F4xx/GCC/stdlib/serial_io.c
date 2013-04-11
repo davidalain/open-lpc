@@ -73,6 +73,8 @@ static void print_hex (uint32_t val) {
 
 int32_t openlpc_printf (const char *fmt, ...) {
 
+	return 0;
+
 	int32_t i;
 	char c;
 	int32_t int_temp;
@@ -128,7 +130,8 @@ int32_t openlpc_puts (const char *s) {
 	uint32_t i;
 	for (i = 0; s[i] != 0x00; i++)
 		;
-	return (int32_t)(0x7FFFFFFF & uart_write (u_stdout, (const uint8_t *)s, i));
+	uart_write (u_stdout, (const uint8_t *)s, i);
+	return 0;
 }
 
 int32_t openlpc_putchar (char c) {

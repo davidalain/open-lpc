@@ -5,6 +5,11 @@
  * Autor: Cristóvão Zuppardo Rufino <cristovaozr@gmail.com>
  */
 
+#include <open_lpc.h>
+#include <stm32f4xx.h>
+
+static digital_io_t panic_led;
+
 /* start address for the initialization values of the .data section. 
 defined in linker script */
 extern unsigned long  _etext;
@@ -52,6 +57,10 @@ void NMI_Handler (void) {
 }
 
 void HardFault_Handler (void) {
+
+	digitalout_setup (&panic_led, GPIOD, 14);
+	digitalout_write (&panic_led, 1);
+
     while (1)
         ;
 }
@@ -62,7 +71,9 @@ void IntDefault_Handler (void) {
 }
 
 // Espaço reservado para a stack do microcontrolador
-static unsigned long pulStack[128];
+#define STACK_SIZE 128
+
+static unsigned long pulStack[STACK_SIZE];
 
 // Vetor de interruções
 __attribute__ ((section(".isr_vector")))

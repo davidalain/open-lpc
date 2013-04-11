@@ -30,8 +30,10 @@ int main (void) {
 	digitalout_setup (&led_laranja, GPIOD, 13);
 	serial_io_setup (&uart2, &uart2);
 
-	openlpc_printf ("Cristovao sends hello world!\r\n");
-	openlpc_printf ("SystemCoreClock=[%u]\r\n", SystemCoreClock);
+	openlpc_puts ("Step1\r\n");
+
+//	openlpc_printf ("Cristovao sends hello world!\r\n");
+//	openlpc_printf ("SystemCoreClock=[%u]\r\n", SystemCoreClock);
 
 	while (1) {
 		digitalout_write (&led_laranja, 1);
