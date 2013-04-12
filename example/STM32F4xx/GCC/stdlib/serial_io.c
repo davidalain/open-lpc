@@ -73,8 +73,6 @@ static void print_hex (uint32_t val) {
 
 int32_t openlpc_printf (const char *fmt, ...) {
 
-	return 0;
-
 	int32_t i;
 	char c;
 	int32_t int_temp;

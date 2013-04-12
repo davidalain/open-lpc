@@ -10,6 +10,7 @@ CC=$(CROSS_COMPILE)gcc
 LD=$(CROSS_COMPILE)ld
 OBJCOPY=$(CROSS_COMPILE)objcopy
 NM=$(CROSS_COMPILE)nm
+GDB=$(CROSS_COMPILE)gdb
 
 # Special variables for Cortex-M4F
 CPU=-mcpu=cortex-m4
@@ -30,7 +31,7 @@ INCLUDEDIR+=-I../../../include \
 CFLAGS := -mthumb			\
 		$(CPU)			\
 		$(FPU)			\
-		-Os			\
+		-O0			\
 		-ffunction-sections	\
 		-fdata-sections		\
 		-MD			\
@@ -73,3 +74,5 @@ clean:
 elf-info:
 	$(NM) -SC $(PROJECT).elf
 
+gdb:
+	$(GDB) $(PROJECT).elf

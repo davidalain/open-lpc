@@ -36,7 +36,7 @@ void Reset_Handler (void) {
         ;
 
     // Zera o bss (inicializa as variáveis sem inicialização
-    for (bss = &_bss; bss < &_ebss; *bss++ = 0)
+//    for (bss = &_bss; bss < &_ebss; *bss++ = 0)
         ;
 
     // Inicia o hardware do sistema
