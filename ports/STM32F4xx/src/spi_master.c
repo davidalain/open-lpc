@@ -15,7 +15,7 @@ extern "C" {
 #include <spi_master.h>
 #include <stm32f4xx.h>
 #include <system_stm32f4xx.h>
-#include <misc.h>
+#include <openlpc_misc.h>
 
 static void enable_spi1 (void) {
 	RCC->AHB1ENR |= (1 << 1);	// Ativa o clock do GPIO
