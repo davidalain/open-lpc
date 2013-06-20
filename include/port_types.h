@@ -12,11 +12,15 @@ extern "C" {
 
 #include <stdint.h>
 
-// TODO: Talvez juntar DigitalOut e DigitalIn na mesma estrutura? SIM!!
 typedef struct {
 	void* port;			// Endereco base da porta
 	uint32_t pinnum;	// Numero do pino (0 a 31)
 } digital_io_t;
+
+typedef struct {
+	void* port;			// Endereco base da porta
+	uint32_t pinnum;	// Numero do pino (0 a 31)
+} analog_io_t;
 
 typedef struct {
 	void* uart;			// Endereco base da UART
@@ -39,6 +43,7 @@ typedef struct {
 typedef struct {
 	void* pwm;
 	uint32_t freq;
+	uint32_t channel;
 } pwm_t;
 
 typedef struct {
@@ -47,6 +52,11 @@ typedef struct {
 	uint32_t div;
 	uint32_t clksel;
 } timer_t;
+
+typedef struct {
+	void *counter;
+	uint32_t div;
+} counter_t;
 
 #ifdef __cplusplus
 }

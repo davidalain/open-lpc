@@ -29,7 +29,7 @@ extern "C" {
  * \param i2c_num Número da porta a ser utilizada
 	 * \param i2c_clk Clock de operação do I2C
  */
-void i2cmaster_setup (i2cmaster_t *i2c, uint32_t i2c_num, uint32_t i2c_clk);
+void i2cmaster_setup (i2cmaster_t *i2c, void* i2c_num, uint32_t i2c_clk);
 
 /*!
  * \fn uint32_t i2cmaster_read (const i2cmaster_t *i2c, uint8_t address, uint8_t *data, uint32_t length)

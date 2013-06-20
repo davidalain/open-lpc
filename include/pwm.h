@@ -30,7 +30,7 @@ extern "C" {
  * \param pwm_num Número do PWM a ser utilizado
  * \param freq Frequência de operação do PWM
  */
-void pwm_setup (pwm_t *pwm, void *pwm_num, uint32_t freq);
+void pwm_setup (pwm_t *pwm, void *pwm_num, uint32_t channel, uint32_t freq);
 
 /*!
  * \fn uint32_t pwm_write (const pwm_t *pwm, uint32_t duty)
@@ -38,7 +38,7 @@ void pwm_setup (pwm_t *pwm, void *pwm_num, uint32_t freq);
  * \param pwm Ponteiro para estrutura pwm_t
  * \param duty Valor do novo duty cycle
  */
-void pwm_write (const pwm_t *pwm, uint32_t duty);
+void pwm_write (pwm_t *pwm, uint32_t duty);
 
 /*!
  * \fn void pwm_read (const pwm_t *pwm)
@@ -54,7 +54,7 @@ uint32_t pwm_read (const pwm_t *pwm);
  * \param pwm Ponteiro para estrutura pwm_t
  * \param duty Valor do novo duty cycle
  */
-void pwm_write_float (const pwm_t *pwm, float duty);
+void pwm_write_float (pwm_t *pwm, float duty);
 
 /*!
  * \fn void pwm_read_float (const pwm_t *pwm)

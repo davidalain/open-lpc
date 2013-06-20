@@ -10,6 +10,7 @@ extern "C" {
 #include <uart.h>
 #include <spi_master.h>
 #include <timer.h>
+#include <counter.h>
 
 /*!
  * \file OpenLPC.h
